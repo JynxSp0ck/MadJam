@@ -4,6 +4,10 @@ using UnityEngine;
 
 namespace Game.Utility {
     class Find {
+        public static GameObject name(string name) {
+            return GameObject.Find(name);
+        }
+
         public static GameObject name(GameObject ancestor, string name) {
             Component[] descendents = ancestor.GetComponentsInChildren<Component>(true);
             for (int i = 0; i < descendents.Length; i++)
