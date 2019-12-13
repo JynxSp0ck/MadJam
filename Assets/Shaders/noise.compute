@@ -1,0 +1,321 @@
+﻿#pragma kernel WhiteNoise
+#pragma kernel Enlarge
+#pragma kernel Add
+#pragma kernel Mul
+#pragma kernel AddN
+#pragma kernel MulN
+#pragma kernel Clamp
+#pragma kernel Abs
+#pragma kernel Max
+#pragma kernel Min
+
+#pragma kernel Grey
+
+static const uint ma = 0xD2511F53;
+static const uint mb = 0xCD9E8D57;
+static const uint wa = 0x9E3779B9;
+static const uint wb = 0xBB67AE85;
+
+static const float pi = 3.141592653589;
+static const float rpi = 0.31830988618;
+static const float e = 2.718281828459;
+
+struct long{
+	uint hi;
+	uint lo;
+};
+
+struct longer {
+	uint i0;
+	uint i1;
+	uint i2;
+	uint i3;
+};
+
+struct float8 {
+	float f0;
+	float f1;
+	float f2;
+	float f3;
+	float f4;
+	float f5;
+	float f6;
+	float f7;
+};
+
+long mul(uint a, uint b) {
+	uint ah = a >> 16;
+	uint bh = b >> 16;
+	uint al = (a << 16) >> 16;
+	uint bl = (b << 16) >> 16;
+	uint hi = al * bl;
+	hi >>= 16;
+	hi += ah * bl;
+	hi += bh * al;
+	hi >>= 16;
+	hi += ah * bh;
+	long ret;
+	ret.hi = hi;
+	ret.lo = a * b;
+	return ret;
+}
+
+long inc(long num) {
+	long ret;
+	ret.hi = num.hi + wa;
+	ret.lo = num.lo + wb;
+	return ret;
+}
+
+longer round(longer ctr, long key) {
+	long o0 = mul(ma, ctr.i0);
+	long o1 = mul(mb, ctr.i2);
+	longer ret;
+	ret.i0 = o1.hi^ctr.i1^key.lo;
+	ret.i1 = o1.lo;
+	ret.i2 = o0.hi^ctr.i3^key.hi;
+	ret.i3 = o0.lo;
+	return ret;
+}
+
+float toFloat(uint input) {
+	return input / 4294967296.0;
+}
+
+float8 toFloat8(longer n) {
+	float8 o;
+	o.f0 = (n.i0 >> 16) / 32768.0 - 1;
+	o.f1 = ((n.i0 << 16) >> 16) / 32768.0 - 1;
+	o.f2 = (n.i1 >> 16) / 32768.0 - 1;
+	o.f3 = ((n.i1 << 16) >> 16) / 32768.0 - 1;
+	o.f4 = (n.i2 >> 16) / 32768.0 - 1;
+	o.f5 = ((n.i2 << 16) >> 16) / 32768.0 - 1;
+	o.f6 = (n.i3 >> 16) / 32768.0 - 1;
+	o.f7 = ((n.i3 << 16) >> 16) / 32768.0 - 1;
+	return o;
+}
+
+RWStructuredBuffer<float> _Input;
+float _Number;
+float _Number2;
+int _Size;
+int _Factor;
+int _Key0;
+int _Key1;
+int _Key2;
+int _Key3;
+RWStructuredBuffer<float> _Result;
+RWStructuredBuffer<uint> _ResultB4;
+
+
+[numthreads(64, 1, 1)]
+void WhiteNoise(uint3 id : SV_DispatchThreadID)
+{
+	long key;
+	key.lo = _Key0;
+	key.hi = _Key1;
+	longer num;
+	num.i0 = id.x / _Size;
+	num.i1 = id.x%_Size;
+	num.i2 = _Key2;
+	num.i3 = _Key3;
+	num = round(num, key);
+	key = inc(key);
+	num = round(num, key);
+	key = inc(key);
+	num = round(num, key);
+	key = inc(key);
+	num = round(num, key);
+	key = inc(key);
+	num = round(num, key);
+	key = inc(key);
+	num = round(num, key);
+	key = inc(key);
+	num = round(num, key);
+	key = inc(key);
+	num = round(num, key);
+	key = inc(key);
+	num = round(num, key);
+	key = inc(key);
+	num = round(num, key);
+	key = inc(key);
+	float8 res = toFloat8(num);
+	_Result[id.x * 8 + 0] = res.f0;
+	_Result[id.x * 8 + 1] = res.f1;
+	_Result[id.x * 8 + 2] = res.f2;
+	_Result[id.x * 8 + 3] = res.f3;
+	_Result[id.x * 8 + 4] = res.f4;
+	_Result[id.x * 8 + 5] = res.f5;
+	_Result[id.x * 8 + 6] = res.f6;
+	_Result[id.x * 8 + 7] = res.f7;
+}
+
+float getGaussian(int x, int y, int ox, int oy, int newsize) {
+	//calculate sample location and sample noise
+	int sx = ox + (ox < 0) * _Size;
+	int sy = oy + (oy < 0) * _Size;
+	sx = sx - (sx >= _Size) * _Size;
+	sy = sy - (sy >= _Size) * _Size;
+	float s = _Input[(sx*_Size + sy) * 3];//sample
+
+	//coordinates of perlin noise
+	float bx = ox * _Factor + _Input[(sx*_Size + sy) * 3 + 1] * _Factor * 0.5;
+	float by = oy * _Factor + _Input[(sx*_Size + sy) * 3 + 2] * _Factor * 0.5;
+
+	//distance to perlin noise
+	float dx = x - bx;
+	float dy = y - by;
+
+	//gaussian function
+	float den = 1.0 / (2 * _Factor * _Factor);
+	return s * rpi * pow(e, -(dx * dx + dy * dy) * den * 4) * 3;
+}
+
+
+[numthreads(64, 1, 1)]
+void Enlarge(uint3 id : SV_DispatchThreadID)
+{
+	int newsize = _Size * _Factor;
+	int x = id.x / newsize;
+	int y = id.x % newsize;
+	int ox = x / _Factor;
+	int oy = y / _Factor;
+	float res = 0;
+	int init = -2;
+	int i = init;
+	int j = init;
+	res += getGaussian(x, y, ox + i, oy + j, newsize);
+	i++;
+	res += getGaussian(x, y, ox + i, oy + j, newsize);
+	i++;
+	res += getGaussian(x, y, ox + i, oy + j, newsize);
+	i++;
+	res += getGaussian(x, y, ox + i, oy + j, newsize);
+	i++;
+	res += getGaussian(x, y, ox + i, oy + j, newsize);
+	j++;
+	i = init;
+	res += getGaussian(x, y, ox + i, oy + j, newsize);
+	i++;
+	res += getGaussian(x, y, ox + i, oy + j, newsize);
+	i++;
+	res += getGaussian(x, y, ox + i, oy + j, newsize);
+	i++;
+	res += getGaussian(x, y, ox + i, oy + j, newsize);
+	i++;
+	res += getGaussian(x, y, ox + i, oy + j, newsize);
+	j++;
+	i = init;
+	res += getGaussian(x, y, ox + i, oy + j, newsize);
+	i++;
+	res += getGaussian(x, y, ox + i, oy + j, newsize);
+	i++;
+	res += getGaussian(x, y, ox + i, oy + j, newsize);
+	i++;
+	res += getGaussian(x, y, ox + i, oy + j, newsize);
+	i++;
+	res += getGaussian(x, y, ox + i, oy + j, newsize);
+	j++;
+	i = init;
+	res += getGaussian(x, y, ox + i, oy + j, newsize);
+	i++;
+	res += getGaussian(x, y, ox + i, oy + j, newsize);
+	i++;
+	res += getGaussian(x, y, ox + i, oy + j, newsize);
+	i++;
+	res += getGaussian(x, y, ox + i, oy + j, newsize);
+	i++;
+	res += getGaussian(x, y, ox + i, oy + j, newsize);
+	j++;
+	i = init;
+	res += getGaussian(x, y, ox + i, oy + j, newsize);
+	i++;
+	res += getGaussian(x, y, ox + i, oy + j, newsize);
+	i++;
+	res += getGaussian(x, y, ox + i, oy + j, newsize);
+	i++;
+	res += getGaussian(x, y, ox + i, oy + j, newsize);
+	i++;
+	res += getGaussian(x, y, ox + i, oy + j, newsize);
+	j++;
+	i = init;
+	_Result[id.x] += res;
+}
+
+
+[numthreads(64, 1, 1)]
+void Add(uint3 id : SV_DispatchThreadID)
+{
+	_Result[id.x] += _Input[id.x];
+}
+
+
+[numthreads(64, 1, 1)]
+void Mul(uint3 id : SV_DispatchThreadID)
+{
+	_Result[id.x] *= _Input[id.x];
+}
+
+
+[numthreads(64, 1, 1)]
+void AddN(uint3 id : SV_DispatchThreadID)
+{
+	_Result[id.x] += _Number;
+}
+
+
+[numthreads(64, 1, 1)]
+void MulN(uint3 id : SV_DispatchThreadID)
+{
+	_Result[id.x] *= _Number;
+}
+
+
+[numthreads(64, 1, 1)]
+void Clamp(uint3 id : SV_DispatchThreadID)
+{
+	float n = _Result[id.x];
+	if (n < _Number)
+		n = _Number;
+	if (n > _Number2)
+		n = _Number2;
+	_Result[id.x] = n;
+}
+
+
+[numthreads(64, 1, 1)]
+void Abs(uint3 id : SV_DispatchThreadID)
+{
+	_Result[id.x] = abs(_Result[id.x]);
+}
+
+
+[numthreads(64, 1, 1)]
+void Max(uint3 id : SV_DispatchThreadID)
+{
+	if (_Input[id.x] > _Result[id.x])
+		_Result[id.x] = _Input[id.x];
+}
+
+
+[numthreads(64, 1, 1)]
+void Min(uint3 id : SV_DispatchThreadID)
+{
+	if (_Input[id.x] < _Result[id.x])
+		_Result[id.x] = _Input[id.x];
+}
+
+
+[numthreads(64, 1, 1)]
+void Grey(uint3 id : SV_DispatchThreadID)
+{
+	uint num = 255 * saturate(_Input[id.x] + 0.5);
+	uint bytes = num;
+	bytes <<= 8;
+	bytes += num;
+	bytes <<= 8;
+	bytes += num;
+	bytes <<= 8;
+	bytes += 255;
+	_ResultB4[id.x] = bytes;
+}
