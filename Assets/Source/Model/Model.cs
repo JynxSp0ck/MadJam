@@ -4,8 +4,10 @@ using Game.Utility;
 
 namespace Game.Model {
     class Model {
-        public Model() {
+        public Player player;
 
+        public Model() {
+            player = new Player();
         }
     }
 }
