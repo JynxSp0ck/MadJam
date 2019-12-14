@@ -40,10 +40,11 @@ namespace Game.Controller {
             Vec3 relacc = new Vec3(0, 0, 0);
             Client.model.player.vel *= 0.95f;
             relacc.y = -0.01f;
-            Block block = Client.model.map.getBlock((Client.model.player.pos - new Vec3(0, 0.01f, 0)).Int());
+            Block block = Client.model.map.getBlock((Client.model.player.pos - new Vec3(0, 0.01f, 0)).Floor());
+            
             if (block.type != BlockType.get("air")) {
                 if (Input.GetKey(KeyCode.W)) {
-                    relacc.z += msens;
+                relacc.z += msens;
                 }
                 if (Input.GetKey(KeyCode.S)) {
                     relacc.z -= msens;
@@ -57,7 +58,7 @@ namespace Game.Controller {
                 Client.model.player.vel.x *= 0.8f;
                 Client.model.player.vel.z *= 0.8f;
                 if (Input.GetKey(KeyCode.Space)) {
-                    relacc.y += 0.1f;
+                    relacc.y += 0.5f;
                 }
             }
             if (relacc.mag() == 0 && Client.model.player.vel.mag() < 0.01f)
@@ -66,8 +67,30 @@ namespace Game.Controller {
             Client.model.player.vel.z += relacc.z * (float)Math.Cos(Client.view.camera.ha * conv) - relacc.x * (float)Math.Sin(Client.view.camera.ha * conv);
             Client.model.player.vel.y += relacc.y;
 
+            Block blocknx = Client.model.map.getBlock((Client.model.player.pos + new Vec3(-0.05f, 1, 0)).Floor());
+            Block blockpx = Client.model.map.getBlock((Client.model.player.pos + new Vec3(0.05f, 1, 0)).Floor());
+            Block blocknz = Client.model.map.getBlock((Client.model.player.pos + new Vec3(0, 1, -0.05f)).Floor());
+            Block blockpz = Client.model.map.getBlock((Client.model.player.pos + new Vec3(0, 1, 0.05f)).Floor());
+            Block blocknx2 = Client.model.map.getBlock((Client.model.player.pos + new Vec3(-0.05f, 2, 0)).Floor());
+            Block blockpx2 = Client.model.map.getBlock((Client.model.player.pos + new Vec3(0.05f, 2, 0)).Floor());
+            Block blocknz2 = Client.model.map.getBlock((Client.model.player.pos + new Vec3(0, 2, -0.05f)).Floor());
+            Block blockpz2 = Client.model.map.getBlock((Client.model.player.pos + new Vec3(0, 2, 0.05f)).Floor());
             
-            if(block.type != BlockType.get("air") && Client.model.player.vel.y < 0) {
+            if (Client.model.player.vel.x < 0 && (blocknx.type != BlockType.get("air") || blocknx2.type != BlockType.get("air"))) {
+                Client.model.player.vel.x = 0;
+            }
+            
+            if (Client.model.player.vel.x > 0 && (blockpx.type != BlockType.get("air") || blockpx2.type != BlockType.get("air"))) {
+                Client.model.player.vel.x = 0;
+            }
+            if (Client.model.player.vel.z < 0 && (blocknz.type != BlockType.get("air") || blocknz2.type != BlockType.get("air"))) {
+                Client.model.player.vel.z = 0;
+            }
+            if (Client.model.player.vel.z > 0 && (blockpz.type != BlockType.get("air") || blockpz2.type != BlockType.get("air"))) {
+                Client.model.player.vel.z = 0;
+            }
+            
+            if (block.type != BlockType.get("air") && Client.model.player.vel.y < 0) {
                 Client.model.player.vel.y = 0;
             }
 
