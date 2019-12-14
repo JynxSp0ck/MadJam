@@ -70,6 +70,28 @@ namespace Game.Controller {
             if(block.type != BlockType.get("air") && Client.model.player.vel.y < 0) {
                 Client.model.player.vel.y = 0;
             }
+            Block blocknx = Client.model.map.getBlock((Client.model.player.pos + new Vec3(-0.05f, 1, 0)).Floor());
+            Block blockpx = Client.model.map.getBlock((Client.model.player.pos + new Vec3(0.05f, 1, 0)).Floor());
+            Block blocknz = Client.model.map.getBlock((Client.model.player.pos + new Vec3(0, 1, -0.05f)).Floor());
+            Block blockpz = Client.model.map.getBlock((Client.model.player.pos + new Vec3(0, 1, 0.05f)).Floor());
+            Block blocknx2 = Client.model.map.getBlock((Client.model.player.pos + new Vec3(-0.05f, 2, 0)).Floor());
+            Block blockpx2 = Client.model.map.getBlock((Client.model.player.pos + new Vec3(0.05f, 2, 0)).Floor());
+            Block blocknz2 = Client.model.map.getBlock((Client.model.player.pos + new Vec3(0, 2, -0.05f)).Floor());
+            Block blockpz2 = Client.model.map.getBlock((Client.model.player.pos + new Vec3(0, 2, 0.05f)).Floor());
+
+            if (Client.model.player.vel.x < 0 && (blocknx.type != BlockType.get("air") || blocknx2.type != BlockType.get("air"))) {
+                Client.model.player.vel.x = 0;
+            }
+
+            if (Client.model.player.vel.x > 0 && (blockpx.type != BlockType.get("air") || blockpx2.type != BlockType.get("air"))) {
+                Client.model.player.vel.x = 0;
+            }
+            if (Client.model.player.vel.z < 0 && (blocknz.type != BlockType.get("air") || blocknz2.type != BlockType.get("air"))) {
+                Client.model.player.vel.z = 0;
+            }
+            if (Client.model.player.vel.z > 0 && (blockpz.type != BlockType.get("air") || blockpz2.type != BlockType.get("air"))) {
+                Client.model.player.vel.z = 0;
+            }
 
             Client.model.player.pos += Client.model.player.vel;
             IntVec3 chunkpos = (Client.model.player.pos / 16).Floor();
