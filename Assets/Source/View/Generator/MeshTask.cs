@@ -22,6 +22,29 @@ namespace Game.View {
             finished = true;
         }
 
+        bool transparentNeighbor(Game.Utility.IntVec3 index) {
+            Game.Model.Block block;
+            block = Client.model.map.getBlock(index + new Utility.IntVec3(1, 0, 0));
+            if (block.type.transparent)
+                return true;
+            block = Client.model.map.getBlock(index + new Utility.IntVec3(0, 1, 0));
+            if (block.type.transparent)
+                return true;
+            block = Client.model.map.getBlock(index + new Utility.IntVec3(0, 0, 1));
+            if (block.type.transparent)
+                return true;
+            block = Client.model.map.getBlock(index + new Utility.IntVec3(-1, 0, 0));
+            if (block.type.transparent)
+                return true;
+            block = Client.model.map.getBlock(index + new Utility.IntVec3(0, -1, 0));
+            if (block.type.transparent)
+                return true;
+            block = Client.model.map.getBlock(index + new Utility.IntVec3(0, 0, -1));
+            if (block.type.transparent)
+                return true;
+            return false;
+        }
+
         void setBlock(Game.Utility.IntVec3 index) {
             Game.Model.Block block = Client.model.map.getBlock(index + chunk.pos * Game.Model.Settings.chunk_size);
             if (block == null)
@@ -29,6 +52,8 @@ namespace Game.View {
             if (block.hidden)
                 return;
             if (block.type.transparent)
+                return;
+            if (!transparentNeighbor(index + chunk.pos * Game.Model.Settings.chunk_size))
                 return;
             Game.Utility.Vec2 pos = block.type.rectpos;
             Game.Utility.Vec2 dim = block.type.rectdim;
