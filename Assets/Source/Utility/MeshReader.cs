@@ -29,7 +29,7 @@ namespace Game.Utility {
             triangles = new List<int>();
             Vector2 ts = new Vector2(1, 1);
             
-            Reader r = new Reader("Assets/Models/" + address);
+            Reader r = new Reader("Assets/Resources/Models/" + address);
 
             int v = 0;
             int nv = 0;

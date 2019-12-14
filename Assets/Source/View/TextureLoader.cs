@@ -1,20 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using Game.Model;
 using Game.Utility;
 
 namespace Game.View {
     class TextureLoader {
+        Texture2D map;
+
         public TextureLoader() {
 
         }
 
         public Texture2D load() {
-            Texture2D map = new Texture2D(16, 16, TextureFormat.ARGB32, false);
+            map = new Texture2D(16, 16, TextureFormat.ARGB32, false);
             List<Texture2D> sprites = new List<Texture2D>();
             for (int i = 0; i < BlockType.types.Count; i++)
-                sprites.Add(Load.texture("Assets/Textures/" + BlockType.types[i].name + ".png"));
+                sprites.Add(Load.texture("Assets/Resources/Textures/" + BlockType.types[i].name + ".png"));
             Rect[] rects = map.PackTextures(sprites.ToArray(), 1);
             map.mipMapBias = -10;
             for (int i = 0; i < rects.Length; i++) {
@@ -32,13 +35,13 @@ namespace Game.View {
                 map.SetPixel((int)(rects[i].x * map.width) - 1, (int)(rects[i].yMax * map.height), map.GetPixel((int)(rects[i].x * map.width), (int)(rects[i].yMax * map.height) - 1));
                 map.SetPixel((int)(rects[i].xMax * map.width), (int)(rects[i].yMax * map.height), map.GetPixel((int)(rects[i].xMax * map.width) - 1, (int)(rects[i].yMax * map.height) - 1));
             }
-            map.Apply();
             for (int i = 0; i < BlockType.types.Count; i++) {
                 BlockType.types[i].rectpos = new Vec2(rects[i].x, rects[i].y);
                 BlockType.types[i].rectdim = new Vec2(rects[i].width, rects[i].height);
             }
             map.wrapMode = TextureWrapMode.Clamp;
             map.filterMode = FilterMode.Point;
+            map.Apply();
             return map;
         }
     }

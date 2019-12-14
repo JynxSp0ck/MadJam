@@ -54,5 +54,22 @@ namespace Game.View {
                 UnityEngine.Debug.Log("Thread Error" + e.ToString());
             }
         }
+
+        public void priority(MeshTask task) {
+            if (tasks.Count <= 1) {
+                add(task);
+                return;
+            }
+            tasks.Insert(1, task);
+            if (tasks[0] != task)
+                return;
+            thread = new Thread(new ThreadStart(task.start));
+            try {
+                thread.Start();
+            }
+            catch (ThreadStateException e) {
+                UnityEngine.Debug.Log("Thread Error" + e.ToString());
+            }
+        }
     }
 }

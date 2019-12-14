@@ -7,6 +7,7 @@ using Game.Utility;
 namespace Game.View {
     class Materials {
         public Material block;
+        public int texcode;
 
         public Materials() {
             block = new Material(Shader.Find("BlockShader"));
@@ -14,6 +15,7 @@ namespace Game.View {
 
         public void setSpriteMap(Texture2D spritemap) {
             block.SetTexture("_Texture", spritemap);
+            texcode = spritemap.GetHashCode();
         }
     }
 }

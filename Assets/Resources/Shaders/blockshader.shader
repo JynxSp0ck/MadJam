@@ -50,7 +50,7 @@
 
 			fixed3 shading(fixed3 colour, fixed4 map, float3 pos, fixed3 normal) {
 				colour.rgb = colour.rgb;
-				float time = _Time.y / 5;
+				float time = _Time.y / 25;
 				//time = 3.14 / 2;
 				float sunstr = saturate(cos(time) * 2 + 1.3);
 				float moonstr = 0.7 * (1 - sunstr);

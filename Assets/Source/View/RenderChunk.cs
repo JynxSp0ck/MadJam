@@ -11,12 +11,14 @@ namespace Game.View {
         GameObject obj;
         Mesh mesh;
         MeshFilter filter;
-        MeshRenderer renderer;
+        public MeshRenderer renderer;
         MeshCollider collider;
 
         List<Vector3> vertices = new List<Vector3>();
         List<Vector2> coords = new List<Vector2>();
         List<int> triangles = new List<int>();
+
+        public bool old = false;
 
         public RenderChunk(Chunk chunk) {
             this.chunk = chunk;
@@ -35,16 +37,23 @@ namespace Game.View {
             mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
             filter = obj.AddComponent<MeshFilter>();
             renderer = obj.AddComponent<MeshRenderer>();
-            renderer.material = Client.view.materials.block;
+            renderer.sharedMaterial = Client.view.materials.block;
             collider = obj.AddComponent<MeshCollider>();
-            generate();
         }
-        
+
         public void generate() {
-            Client.view.world.generator.add(new MeshTask(chunk));
+            if (old) {
+                old = false;
+                Client.view.world.generator.priority(new MeshTask(chunk));
+            }
+            else {
+                Client.view.world.generator.add(new MeshTask(chunk));
+            }
         }
-        
+
         public void setMesh(ThreadMesh tm) {
+            mesh = new Mesh();
+            mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
             vertices = new List<Vector3>();
             coords = new List<Vector2>();
             triangles = tm.triangles;
@@ -63,6 +72,10 @@ namespace Game.View {
             filter.sharedMesh = mesh;
             collider.sharedMesh = mesh;
             obj.SetActive(true);//lag
+        }
+
+        public void depricate() {
+            old = true;
         }
 
         public void destroy() {
