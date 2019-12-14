@@ -20,6 +20,7 @@ namespace Game {
         long lastTime = 0;
         // Start is called before the first frame update
         void Start() {
+            Settings.calculate();
             random = new System.Random();
             Noise.init(cs);
             model = new Model.Model();

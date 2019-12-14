@@ -12,21 +12,21 @@ namespace Game.View {
 
         public World() {
             obj = Find.name(Client.view.obj, "Chunks");
-            chunks = new RenderChunk[Settings.memory_distance * 2, Settings.memory_distance * 2, Settings.memory_distance * 2];
-            for (int i = -Settings.memory_distance; i < Settings.memory_distance; i++) {
-                for (int j = -Settings.memory_distance; j < Settings.memory_distance; j++) {
-                    for (int k = -Settings.memory_distance; k < Settings.memory_distance; k++) {
-                        chunks[i + Settings.memory_distance, j + Settings.memory_distance, k + Settings.memory_distance] = null;
+            chunks = new RenderChunk[Settings.map_size, Settings.map_size, Settings.map_size];
+            for (int i = 0; i < Settings.map_size; i++) {
+                for (int j = 0; j < Settings.map_size; j++) {
+                    for (int k = 0; k < Settings.map_size; k++) {
+                        chunks[i, j, k] = null;
                     }
                 }
             }
         }
 
         public void setChunks() {
-            for (int i = -Settings.load_distance; i < Settings.load_distance; i++) {
-                for (int j = -Settings.load_distance; j < Settings.load_distance; j++) {
-                    for (int k = -Settings.load_distance; k < Settings.load_distance; k++) {
-                        chunks[i + Settings.load_distance, j + Settings.load_distance, k + Settings.load_distance] = new RenderChunk(Client.model.map.getChunk(new IntVec3(i, j, k) * Settings.chunk_size));
+            for (int i = -Settings.load_distance; i <= Settings.load_distance; i++) {
+                for (int j = -Settings.load_distance; j <= Settings.load_distance; j++) {
+                    for (int k = -Settings.load_distance; k <= Settings.load_distance; k++) {
+                        chunks[i + Settings.memory_distance, j + Settings.memory_distance, k + Settings.memory_distance] = new RenderChunk(Client.model.map.getChunk(new IntVec3(i, j, k) * Settings.chunk_size));
                     }
                 }
             }

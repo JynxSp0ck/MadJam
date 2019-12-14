@@ -9,18 +9,18 @@ namespace Game.Model {
 
         public Map() {
             chunkpos = new IntVec3(0, 0, 0);
-            chunks = new Chunk[Settings.memory_distance * 2, Settings.memory_distance * 2, Settings.memory_distance * 2];
-            for (int i = -Settings.memory_distance; i < Settings.memory_distance; i++) {
-                for (int j = -Settings.memory_distance; j < Settings.memory_distance; j++) {
-                    for (int k = -Settings.memory_distance; k < Settings.memory_distance; k++) {
-                        chunks[i + Settings.memory_distance, j + Settings.memory_distance, k + Settings.memory_distance] = null;
+            chunks = new Chunk[Settings.map_size, Settings.map_size, Settings.map_size];
+            for (int i = 0; i < Settings.map_size ; i++) {
+                for (int j = 0; j < Settings.map_size; j++) {
+                    for (int k = 0; k < Settings.map_size; k++) {
+                        chunks[i, j, k] = null;
                     }
                 }
             }
-            for (int i = -Settings.load_distance; i < Settings.load_distance; i++) {
-                for (int j = -Settings.load_distance; j < Settings.load_distance; j++) {
-                    for (int k = -Settings.load_distance; k < Settings.load_distance; k++) {
-                        chunks[i + Settings.load_distance, j + Settings.load_distance, k + Settings.load_distance] = new Chunk(new IntVec3(i, j, k));
+            for (int i = -Settings.load_distance; i <= Settings.load_distance; i++) {
+                for (int j = -Settings.load_distance; j <= Settings.load_distance; j++) {
+                    for (int k = -Settings.load_distance; k <= Settings.load_distance; k++) {
+                        chunks[i + Settings.memory_distance, j + Settings.memory_distance, k + Settings.memory_distance] = new Chunk(new IntVec3(i, j, k));
                     }
                 }
             }
@@ -29,7 +29,7 @@ namespace Game.Model {
         public Chunk getChunk(IntVec3 pos) {
             IntVec3 localindex = (pos.Float() / Settings.chunk_size).Floor();
             IntVec3 cindex = localindex - chunkpos;
-            if (cindex.x < -Settings.memory_distance || cindex.y < -Settings.memory_distance || cindex.z < -Settings.memory_distance || cindex.x >= Settings.memory_distance || cindex.y >= Settings.memory_distance || cindex.z >= Settings.memory_distance)
+            if (cindex.x < -Settings.memory_distance || cindex.y < -Settings.memory_distance || cindex.z < -Settings.memory_distance || cindex.x > Settings.memory_distance || cindex.y > Settings.memory_distance || cindex.z > Settings.memory_distance)
                 return null;
             cindex += new IntVec3(Settings.memory_distance, Settings.memory_distance, Settings.memory_distance);
             return chunks[cindex.x, cindex.y, cindex.z];
