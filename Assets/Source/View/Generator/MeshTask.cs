@@ -24,14 +24,14 @@ namespace Game.View {
 
         void setBlock(Game.Utility.IntVec3 index) {
             Game.Model.Block block = Client.model.map.getBlock(index + chunk.pos * Game.Model.Settings.chunk_size);
-            Game.Utility.Vec2 pos = block.type.rectpos;
-            Game.Utility.Vec2 dim = block.type.rectdim;
             if (block == null)
                 return;
             if (block.hidden)
                 return;
             if (block.type.transparent)
                 return;
+            Game.Utility.Vec2 pos = block.type.rectpos;
+            Game.Utility.Vec2 dim = block.type.rectdim;
             int offset = mesh.vertices.Count;
 
             for (int i = 0; i < MeshGenerator.cube.vertices.Count; i++)

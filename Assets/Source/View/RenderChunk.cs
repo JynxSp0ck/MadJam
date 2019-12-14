@@ -29,7 +29,7 @@ namespace Game.View {
             if (chunk == null)
                 return;
             IntVec3 pos = chunk.pos;
-            obj = new GameObject("Chunk " + (pos.x < 0 ? "N" : "P") + Mathf.Abs(pos.x) + (pos.y < 0 ? "N" : "P") + Mathf.Abs(pos.y) + (pos.z < 0 ? "N" : "P") + Mathf.Abs(pos.z));
+            obj = new GameObject("Chunk " + chunk.name);
             obj.transform.position = Conv.ert((pos * Settings.chunk_size).Float());
             obj.transform.parent = Client.view.world.obj.transform;
             obj.SetActive(false);

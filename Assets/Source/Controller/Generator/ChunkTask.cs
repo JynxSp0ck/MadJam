@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
+using System.IO;
 
 namespace Game.Controller {
     class ChunkTask {
@@ -24,10 +24,27 @@ namespace Game.Controller {
         }
 
         public void save() {
+            List<string> lines = new List<string>();
+            for (int i = 0; i < Game.Model.Settings.chunk_size; i++) {
+                for (int j = 0; j < Game.Model.Settings.chunk_size; j++) {
+                    for (int k = 0; k < Game.Model.Settings.chunk_size; k++) {
+                        lines.Add("" + chunk.blocks[i, j, k].type.index);
+                    }
+                }
+            }
+            File.WriteAllLines("Maps/" + Client.model.map.name + "/" + chunk.name, lines);
             chunk.saved = true;
         }
 
         public void load() {
+            Game.Utility.Reader r = new Utility.Reader("Maps/" + Client.model.map.name + "/" + chunk.name);
+            for (int i = 0; i < Game.Model.Settings.chunk_size; i++) {
+                for (int j = 0; j < Game.Model.Settings.chunk_size; j++) {
+                    for (int k = 0; k < Game.Model.Settings.chunk_size; k++) {
+                        chunk.blocks[i, j, k] = new Model.Block(Model.BlockType.get(int.Parse(r.read())));
+                    }
+                }
+            }
             chunk.loaded = true;
         }
 

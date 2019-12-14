@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.IO;
 using Game.Model;
 using Game.Utility;
 
@@ -11,11 +12,12 @@ namespace Game.Controller {
         public Thread thread = null;
 
         public ChunkGenerator() {
-
+            Directory.CreateDirectory("Maps/" + Client.model.map.name);
         }
 
         public void run() {
             generateChunks();
+            //saveChunks();
             if (tasks.Count == 0)
                 return;
             if (!tasks[0].finished)
@@ -40,7 +42,7 @@ namespace Game.Controller {
                         if (chunk == null) {
                             chunk = new Chunk(new IntVec3(i, j, k) + Client.model.map.chunkpos);
                             Client.model.map.chunks[i + Settings.offset, j + Settings.offset, k + Settings.offset] = chunk;
-                            add("generate", chunk);
+                            add(File.Exists("Maps/" + Client.model.map.name + "/" + chunk.name) ? "load" : "generate", chunk);
                         }
                     }
                 }

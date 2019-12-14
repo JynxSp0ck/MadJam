@@ -20,6 +20,7 @@ namespace Game.Controller {
             look();
             move();
             mineBlock();
+            placeBlock();
         }
 
         void look() {
@@ -41,19 +42,19 @@ namespace Game.Controller {
             Client.model.player.vel *= 0.95f;
             relacc.y = -0.01f;
             Block block = Client.model.map.getBlock((Client.model.player.pos - new Vec3(0, 0.01f, 0)).Floor());
+            if (Input.GetKey(KeyCode.W)) {
+                relacc.z += msens;
+            }
+            if (Input.GetKey(KeyCode.S)) {
+                relacc.z -= msens;
+            }
+            if (Input.GetKey(KeyCode.D)) {
+                relacc.x += msens;
+            }
+            if (Input.GetKey(KeyCode.A)) {
+                relacc.x -= msens;
+            }
             if (block.type != BlockType.get("air")) {
-                if (Input.GetKey(KeyCode.W)) {
-                    relacc.z += msens;
-                }
-                if (Input.GetKey(KeyCode.S)) {
-                    relacc.z -= msens;
-                }
-                if (Input.GetKey(KeyCode.D)) {
-                    relacc.x += msens;
-                }
-                if (Input.GetKey(KeyCode.A)) {
-                    relacc.x -= msens;
-                }
                 Client.model.player.vel.x *= 0.8f;
                 Client.model.player.vel.z *= 0.8f;
                 if (Input.GetKey(KeyCode.Space)) {
@@ -80,7 +81,7 @@ namespace Game.Controller {
             Client.view.world.move(delta);
         }
 
-        IntVec3 point() {
+        IntVec3 pointmine() {
             RaycastHit hit;
             Ray ray = UnityEngine.Camera.main.ScreenPointToRay(Input.mousePosition);
             bool result = Physics.Raycast(ray, out hit, 10000f);
@@ -90,9 +91,19 @@ namespace Game.Controller {
             return point;
         }
 
+        IntVec3 pointplace() {
+            RaycastHit hit;
+            Ray ray = UnityEngine.Camera.main.ScreenPointToRay(Input.mousePosition);
+            bool result = Physics.Raycast(ray, out hit, 10000f);
+            if (result == false)
+                return null;
+            IntVec3 point = (Conv.ert(hit.point) - Conv.ert(ray.direction) / 100).Floor();
+            return point;
+        }
+
         void mineBlock() {
-            if (Input.GetButton("Fire1")) {
-                IntVec3 Point = point();
+            if (Input.GetMouseButton(0)) {
+                IntVec3 Point = pointmine();
                 Block block = Client.model.map.getBlock(Point);
                 block.type = BlockType.get("air");
                 IntVec3 index = Client.model.map.getChunkIndex(Point);
@@ -100,7 +111,20 @@ namespace Game.Controller {
                     Client.model.map.chunks[index.x, index.y, index.z].depricate();
                     Client.view.world.chunks[index.x, index.y, index.z].depricate();
                 }
-            }  
+            }
+        }
+
+        void placeBlock() {
+            if (Input.GetMouseButton(1)) {
+                IntVec3 Point = pointplace();
+                Block block = Client.model.map.getBlock(Point);
+                block.type = BlockType.get("dirt");
+                IntVec3 index = Client.model.map.getChunkIndex(Point);
+                if (index != null) {
+                    Client.model.map.chunks[index.x, index.y, index.z].depricate();
+                    Client.view.world.chunks[index.x, index.y, index.z].depricate();
+                }
+            }
         }
     }
 }
