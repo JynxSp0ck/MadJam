@@ -59,8 +59,9 @@ namespace Game.Controller {
             IntVec3 chunkpos = (Client.model.player.pos / 16).Floor();
             if (chunkpos == Client.model.map.chunkpos)
                 return;
+            IntVec3 delta = chunkpos - Client.model.map.chunkpos;
             Client.model.map.setChunkPos(chunkpos);
-            Client.view.world.move(chunkpos - Client.model.map.chunkpos);
+            Client.view.world.move(delta);
         }
 
         IntVec3 point() {

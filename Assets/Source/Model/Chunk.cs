@@ -14,11 +14,10 @@ namespace Game.Model {
             for (int i = 0; i < Settings.chunk_size; i++) {
                 for (int j = 0; j < Settings.chunk_size; j++) {
                     for (int k = 0; k < Settings.chunk_size; k++) {
-                        blocks[i, j, k] = new Block(pos.y >= 0 ? "air" : "dirt");
+                        blocks[i, j, k] = null;
                     }
                 }
             }
-            generated = true;
         }
     }
 }

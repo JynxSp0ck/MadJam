@@ -9,6 +9,7 @@ namespace Game.View {
         public GameObject obj;
 
         public RenderChunk[,,] chunks;
+        public MeshGenerator generator;
 
         public World() {
             obj = Find.name(Client.view.obj, "Chunks");
@@ -20,6 +21,13 @@ namespace Game.View {
                     }
                 }
             }
+            generator = new MeshGenerator();
+            Mesh m = Find.name("Cube").GetComponent<MeshFilter>().mesh;
+            Vector3[] v = m.vertices;
+            for (int i = 0; i < v.Length; i++) {
+                MeshGenerator.cube.vertices.Add(new Vec3(v[i].x + 0.5f, v[i].y + 0.5f, v[i].z + 0.5f));
+            }
+            MeshGenerator.cube.triangles.AddRange(m.triangles);
         }
 
         public void setChunks() {
@@ -27,7 +35,10 @@ namespace Game.View {
                 for (int j = -Settings.load_distance; j <= Settings.load_distance; j++) {
                     for (int k = -Settings.load_distance; k <= Settings.load_distance; k++) {
                         if (chunks[i + Settings.offset, j + Settings.offset, k + Settings.offset] == null) {
-                            chunks[i + Settings.offset, j + Settings.offset, k + Settings.offset] = new RenderChunk(Client.model.map.getChunk(new IntVec3(i, j, k) * Settings.chunk_size));
+                            Chunk chunk = Client.model.map.getChunk((new IntVec3(i, j, k) + Client.model.map.chunkpos) * Settings.chunk_size);
+                            if (chunk != null && chunk.generated) {
+                                chunks[i + Settings.offset, j + Settings.offset, k + Settings.offset] = new RenderChunk(chunk);
+                            }
                         }
                     }
                 }
@@ -35,6 +46,7 @@ namespace Game.View {
         }
 
         public void move(IntVec3 delta) {
+            Debug.Log(delta.x + ", " + delta.y + ", " + delta.z);
             RenderChunk[,,] newchunks = new RenderChunk[Settings.map_size, Settings.map_size, Settings.map_size];
             for (int i = 0; i < Settings.map_size; i++) {
                 for (int j = 0; j < Settings.map_size; j++) {
@@ -46,18 +58,22 @@ namespace Game.View {
             for (int i = 0; i < Settings.map_size; i++) {
                 for (int j = 0; j < Settings.map_size; j++) {
                     for (int k = 0; k < Settings.map_size; k++) {
-                        IntVec3 oldindex = new IntVec3(i, j, k) + delta;
-                        if (oldindex.x >= 0 && oldindex.y >= 0 && oldindex.z >= 0 && oldindex.x < Settings.map_size && oldindex.y < Settings.map_size && oldindex.z < Settings.map_size) {
-                            newchunks[i, j, k] = chunks[oldindex.x, oldindex.y, oldindex.z];
+                        IntVec3 index = new IntVec3(i, j, k) - delta;
+                        if (index.x >= 0 && index.y >= 0 && index.z >= 0 && index.x < Settings.map_size && index.y < Settings.map_size && index.z < Settings.map_size) {
+                            newchunks[index.x, index.y, index.z] = chunks[i, j, k];
                         }
-                        else {
-                            newchunks[i, j, k].destroy();
+                        else if (chunks[i, j, k] != null) {
+                            chunks[i, j, k].destroy();
                         }
                     }
                 }
             }
             chunks = newchunks;
+        }
+
+        public void update() {
             setChunks();
+            generator.run();
         }
     }
 }

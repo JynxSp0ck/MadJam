@@ -8,6 +8,7 @@ using Game.Utility;
 namespace Game.Controller {
     class Controller {
         PlayerController playcon;
+        public ChunkGenerator chunkgen;
 
         public Controller() {
 
@@ -16,6 +17,7 @@ namespace Game.Controller {
         public void init() {
             Cursor.lockState = CursorLockMode.Locked;
             playcon = new PlayerController();
+            chunkgen = new ChunkGenerator();
         }
 
         public void update() {
@@ -27,6 +29,7 @@ namespace Game.Controller {
                 #endif
             }
             playcon.update();
+            chunkgen.run();
         }
     }
 }
