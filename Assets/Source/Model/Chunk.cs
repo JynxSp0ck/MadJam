@@ -6,7 +6,8 @@ namespace Game.Model {
     class Chunk {
         public IntVec3 pos;
         public Block[,,] blocks;
-        public bool generated = false;
+        public bool loaded = false;
+        public bool saved = false;
 
         public Chunk(IntVec3 pos) {
             this.pos = pos;
@@ -18,6 +19,10 @@ namespace Game.Model {
                     }
                 }
             }
+        }
+
+        public void depricate() {
+            saved = false;
         }
     }
 }

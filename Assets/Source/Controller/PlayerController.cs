@@ -91,12 +91,13 @@ namespace Game.Controller {
         }
 
         void mineBlock() {
-            if (Input.GetButtonDown("Fire1")) {
+            if (Input.GetButton("Fire1")) {
                 IntVec3 Point = point();
                 Block block = Client.model.map.getBlock(Point);
                 block.type = BlockType.get("air");
                 IntVec3 index = Client.model.map.getChunkIndex(Point);
                 if (index != null) {
+                    Client.model.map.chunks[index.x, index.y, index.z].depricate();
                     Client.view.world.chunks[index.x, index.y, index.z].depricate();
                 }
             }  

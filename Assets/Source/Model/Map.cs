@@ -4,10 +4,12 @@ using Game.Utility;
 
 namespace Game.Model {
     class Map {
+        public string name;
         public Chunk[,,] chunks;
         public IntVec3 chunkpos;
 
-        public Map() {
+        public Map(string name) {
+            this.name = name;
             chunkpos = new IntVec3(0, 0, 0);
             chunks = new Chunk[Settings.map_size, Settings.map_size, Settings.map_size];
             for (int i = 0; i < Settings.map_size ; i++) {
@@ -50,6 +52,8 @@ namespace Game.Model {
         }
 
         public IntVec3 getChunkIndex(IntVec3 pos) {
+            if (pos == null)
+                return null;
             IntVec3 localindex = (pos.Float() / Settings.chunk_size).Floor();
             IntVec3 cindex = localindex - chunkpos + new IntVec3(Settings.offset, Settings.offset, Settings.offset);
             if (!chunkOnMap(cindex))
@@ -71,17 +75,19 @@ namespace Game.Model {
             Chunk chunk = getChunk(pos);
             if (chunk == null)
                 return null;
-            if (!chunk.generated)
+            if (!chunk.loaded)
                 return null;
             return pos - localindex * Settings.chunk_size;
         }
 
         public Block getBlock(IntVec3 pos) {
+            if (pos == null)
+                return new Block("air");
             IntVec3 localindex = (pos.Float() / Settings.chunk_size).Floor();
             Chunk chunk = getChunk(pos);
             if (chunk == null)
                 return new Block("air");
-            if (!chunk.generated)
+            if (!chunk.loaded)
                 return new Block("air");
             IntVec3 bindex = pos - localindex * Settings.chunk_size;
             return chunk.blocks[bindex.x, bindex.y, bindex.z];

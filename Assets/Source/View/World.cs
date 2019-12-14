@@ -47,7 +47,7 @@ namespace Game.View {
                     for (int k = -Settings.load_distance; k <= Settings.load_distance; k++) {
                         if (chunks[i + Settings.offset, j + Settings.offset, k + Settings.offset] == null) {
                             Chunk chunk = Client.model.map.getChunk((new IntVec3(i, j, k) + Client.model.map.chunkpos) * Settings.chunk_size);
-                            if (chunk != null && chunk.generated) {
+                            if (chunk != null && chunk.loaded) {
                                 chunks[i + Settings.offset, j + Settings.offset, k + Settings.offset] = new RenderChunk(chunk);
                                 chunks[i + Settings.offset, j + Settings.offset, k + Settings.offset].generate();
                             }

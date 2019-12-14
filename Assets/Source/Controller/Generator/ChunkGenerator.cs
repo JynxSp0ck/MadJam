@@ -40,15 +40,28 @@ namespace Game.Controller {
                         if (chunk == null) {
                             chunk = new Chunk(new IntVec3(i, j, k) + Client.model.map.chunkpos);
                             Client.model.map.chunks[i + Settings.offset, j + Settings.offset, k + Settings.offset] = chunk;
-                            add(chunk);
+                            add("generate", chunk);
                         }
                     }
                 }
             }
         }
 
-        public void add(Chunk chunk) {
-            ChunkTask task = new ChunkTask(chunk);
+        public void saveChunks() {
+            for (int i = 0; i < Settings.map_size; i++) {
+                for (int j = 0; j < Settings.map_size; j++) {
+                    for (int k = 0; k < Settings.map_size; k++) {
+                        Chunk chunk = Client.model.map.chunks[i, j, k];
+                        if (chunk != null && chunk.loaded && !chunk.saved) {
+                            add("save", chunk);
+                        }
+                    }
+                }
+            }
+        }
+
+        public void add(string type, Chunk chunk) {
+            ChunkTask task = new ChunkTask(type, chunk);
             tasks.Add(task);
             if (tasks[0] != task)
                 return;

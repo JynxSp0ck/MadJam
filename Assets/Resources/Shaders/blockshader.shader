@@ -92,8 +92,9 @@
 				//get border coordinates
 				//float3 normal = tex2D(_Normal, i.pos.xz / _Size).rgb + float3(-0.5, 0.25, -0.5);
 				float4 tex = tex2D(_Texture, i.uv);
-				if (tex.a < 1)
-					discard;
+				if (tex.a < 1) {
+					tex = float4(0.5, 0.5, 0.5, 1);
+				}
 				fixed4 col = fixed4(0, 0, 0, tex.a);
 				col.rgb += shading(tex.rgb, fixed4(0.5, 0.5, 0.5, 0), i.pos.xyz, i.nml);
 				return col;

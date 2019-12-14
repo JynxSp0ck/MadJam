@@ -10,7 +10,7 @@ namespace Game.Model {
         public Model() {
             setupblocks();
             player = new Player();
-            map = new Map();
+            map = new Map("map");
         }
 
         void setupblocks() {
