@@ -39,6 +39,8 @@ namespace Game.Controller {
         void move() {
             Vec3 relacc = new Vec3(0, 0, 0);
             Client.model.player.vel *= 0.8f;
+            relacc.y = -0.01f;
+            Block block = Client.model.map.getBlock((Client.model.player.pos - new Vec3(0, 1.1f, 0)).Int());
             if (Input.GetKey(KeyCode.W)) {
                 relacc.z += msens;
             }
@@ -51,10 +53,20 @@ namespace Game.Controller {
             if (Input.GetKey(KeyCode.A)) {
                 relacc.x -= msens;
             }
+            if (Input.GetKey(KeyCode.Space) && block.type != BlockType.get("air")) {
+                relacc.y += 0.5f;
+            }
             if (relacc.mag() == 0 && Client.model.player.vel.mag() < 0.01f)
                 Client.model.player.vel *= 0;
             Client.model.player.vel.x += relacc.x * (float)Math.Cos(Client.view.camera.ha * conv) + relacc.z * (float)Math.Sin(Client.view.camera.ha * conv);
             Client.model.player.vel.z += relacc.z * (float)Math.Cos(Client.view.camera.ha * conv) - relacc.x * (float)Math.Sin(Client.view.camera.ha * conv);
+            Client.model.player.vel.y += relacc.y;
+
+            
+            if(block.type != BlockType.get("air")) {
+                Client.model.player.vel.y += 0.01f;
+            }
+
             Client.model.player.pos += Client.model.player.vel;
             IntVec3 chunkpos = (Client.model.player.pos / 16).Floor();
             if (chunkpos == Client.model.map.chunkpos)
@@ -75,8 +87,10 @@ namespace Game.Controller {
 
         void mineBlock() {
             if (Input.GetMouseButtonDown(1)) {
-                Block block = Client.model.map.getBlock(point());
-                block = new Block("air");
+                IntVec3 Point = point();
+                Block block = Client.model.map.getBlock(Point);
+                block.type = BlockType.get("air");
+                Client.model.map.getChunkIndex(Point);
             }  
         }
     }
