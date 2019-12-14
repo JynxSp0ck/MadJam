@@ -34,7 +34,10 @@ namespace Game.View {
 
             for (int i = 0; i < MeshGenerator.cube.vertices.Count; i++)
                 mesh.vertices.Add(MeshGenerator.cube.vertices[i] + index.Float());
-            
+
+            for (int i = 0; i < MeshGenerator.cube.coords.Count; i++)
+                mesh.coords.Add(MeshGenerator.cube.coords[i]);//TODO block spritemap offset
+
             for (int i = 0; i < MeshGenerator.cube.triangles.Count; i++)
                 mesh.triangles.Add(MeshGenerator.cube.triangles[i] + offset);
         }

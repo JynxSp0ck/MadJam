@@ -22,10 +22,14 @@ namespace Game.View {
                 }
             }
             generator = new MeshGenerator();
-            Mesh m = Find.name("Cube").GetComponent<MeshFilter>().mesh;
+            Mesh m = new MeshReader("cube.obj").getMesh();
             Vector3[] v = m.vertices;
             for (int i = 0; i < v.Length; i++) {
-                MeshGenerator.cube.vertices.Add(new Vec3(v[i].x + 0.5f, v[i].y + 0.5f, v[i].z + 0.5f));
+                MeshGenerator.cube.vertices.Add(new Vec3(v[i].x, v[i].y, v[i].z));
+            }
+            Vector2[] c = m.uv;
+            for (int i = 0; i < v.Length; i++) {
+                MeshGenerator.cube.coords.Add(new Vec2(c[i].x, c[i].y));
             }
             MeshGenerator.cube.triangles.AddRange(m.triangles);
         }

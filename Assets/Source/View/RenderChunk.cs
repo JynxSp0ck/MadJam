@@ -15,6 +15,7 @@ namespace Game.View {
         MeshCollider collider;
 
         List<Vector3> vertices = new List<Vector3>();
+        List<Vector2> coords = new List<Vector2>();
         List<int> triangles = new List<int>();
 
         public RenderChunk(Chunk chunk) {
@@ -45,12 +46,17 @@ namespace Game.View {
         
         public void setMesh(ThreadMesh tm) {
             vertices = new List<Vector3>();
+            coords = new List<Vector2>();
             triangles = tm.triangles;
 
             for (int i = 0; i < tm.vertices.Count; i++)
                 vertices.Add(Conv.ert(tm.vertices[i]));
 
+            for (int i = 0; i < tm.coords.Count; i++)
+                coords.Add(Conv.ert(tm.coords[i]));
+
             mesh.vertices = vertices.ToArray();
+            mesh.uv = coords.ToArray();
             mesh.triangles = triangles.ToArray();
             mesh.RecalculateNormals();
             mesh.RecalculateBounds();
