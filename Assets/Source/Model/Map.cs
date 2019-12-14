@@ -80,9 +80,9 @@ namespace Game.Model {
             IntVec3 localindex = (pos.Float() / Settings.chunk_size).Floor();
             Chunk chunk = getChunk(pos);
             if (chunk == null)
-                return null;
+                return new Block("air");
             if (!chunk.generated)
-                return null;
+                return new Block("air");
             IntVec3 bindex = pos - localindex * Settings.chunk_size;
             return chunk.blocks[bindex.x, bindex.y, bindex.z];
         }

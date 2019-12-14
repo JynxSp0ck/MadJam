@@ -25,7 +25,7 @@ namespace Game.Controller {
 
         Game.Model.Block setBlock(Game.Utility.IntVec3 index) {
             Game.Utility.IntVec3 pos = index + chunk.pos * Game.Model.Settings.chunk_size;
-            return pos.y >= 0 ? new Game.Model.Block("air") : new Game.Model.Block("dirt");
+            return pos.y >= Client.random.Next(-3, 0) ? new Game.Model.Block("air") : new Game.Model.Block("dirt");
         }
     }
 }

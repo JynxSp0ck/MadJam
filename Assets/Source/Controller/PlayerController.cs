@@ -10,7 +10,7 @@ namespace Game.Controller {
         Vec2 mouse = new Vec2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
         public float conv = 3.14159265358979f / 180f;
         float lsens = 5f;//lookove senitivity
-        float msens = 0.1f;//move senitivity
+        float msens = 0.01f;//move senitivity
 
         public PlayerController() {
 
@@ -38,23 +38,27 @@ namespace Game.Controller {
 
         void move() {
             Vec3 relacc = new Vec3(0, 0, 0);
-            Client.model.player.vel *= 0.8f;
+            Client.model.player.vel *= 0.95f;
             relacc.y = -0.01f;
-            Block block = Client.model.map.getBlock((Client.model.player.pos - new Vec3(0, 1.1f, 0)).Int());
-            if (Input.GetKey(KeyCode.W)) {
-                relacc.z += msens;
-            }
-            if (Input.GetKey(KeyCode.S)) {
-                relacc.z -= msens;
-            }
-            if (Input.GetKey(KeyCode.D)) {
-                relacc.x += msens;
-            }
-            if (Input.GetKey(KeyCode.A)) {
-                relacc.x -= msens;
-            }
-            if (Input.GetKey(KeyCode.Space) && block.type != BlockType.get("air")) {
-                relacc.y += 0.5f;
+            Block block = Client.model.map.getBlock((Client.model.player.pos - new Vec3(0, 0.01f, 0)).Int());
+            if (block.type != BlockType.get("air")) {
+                if (Input.GetKey(KeyCode.W)) {
+                    relacc.z += msens;
+                }
+                if (Input.GetKey(KeyCode.S)) {
+                    relacc.z -= msens;
+                }
+                if (Input.GetKey(KeyCode.D)) {
+                    relacc.x += msens;
+                }
+                if (Input.GetKey(KeyCode.A)) {
+                    relacc.x -= msens;
+                }
+                Client.model.player.vel.x *= 0.8f;
+                Client.model.player.vel.z *= 0.8f;
+                if (Input.GetKey(KeyCode.Space)) {
+                    relacc.y += 0.1f;
+                }
             }
             if (relacc.mag() == 0 && Client.model.player.vel.mag() < 0.01f)
                 Client.model.player.vel *= 0;
@@ -63,8 +67,8 @@ namespace Game.Controller {
             Client.model.player.vel.y += relacc.y;
 
             
-            if(block.type != BlockType.get("air")) {
-                Client.model.player.vel.y += 0.01f;
+            if(block.type != BlockType.get("air") && Client.model.player.vel.y < 0) {
+                Client.model.player.vel.y = 0;
             }
 
             Client.model.player.pos += Client.model.player.vel;
