@@ -40,7 +40,7 @@ namespace Game.Controller {
             Vec3 relacc = new Vec3(0, 0, 0);
             Client.model.player.vel *= 0.95f;
             relacc.y = -0.01f;
-            Block block = Client.model.map.getBlock((Client.model.player.pos - new Vec3(0, 0.01f, 0)).Int());
+            Block block = Client.model.map.getBlock((Client.model.player.pos - new Vec3(0, 0.01f, 0)).Floor());
             if (block.type != BlockType.get("air")) {
                 if (Input.GetKey(KeyCode.W)) {
                     relacc.z += msens;
@@ -57,7 +57,7 @@ namespace Game.Controller {
                 Client.model.player.vel.x *= 0.8f;
                 Client.model.player.vel.z *= 0.8f;
                 if (Input.GetKey(KeyCode.Space)) {
-                    relacc.y += 0.1f;
+                    relacc.y += 0.5f;
                 }
             }
             if (relacc.mag() == 0 && Client.model.player.vel.mag() < 0.01f)
