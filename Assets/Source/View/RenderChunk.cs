@@ -25,7 +25,7 @@ namespace Game.View {
         void setChunk() {
             if (chunk == null)
                 return;
-            IntVec3 pos = chunk.index;
+            IntVec3 pos = chunk.pos;
             obj = new GameObject("Chunk " + (pos.x < 0 ? "N" : "P") + Mathf.Abs(pos.x) + (pos.y < 0 ? "N" : "P") + Mathf.Abs(pos.y) + (pos.z < 0 ? "N" : "P") + Mathf.Abs(pos.z));
             obj.transform.position = Conv.ert((pos * Settings.chunk_size).Float());
             obj.transform.parent = Client.view.world.obj.transform;
@@ -57,7 +57,7 @@ namespace Game.View {
         }
 
         void setBlock(IntVec3 index) {
-            Block block = Client.model.map.getBlock(index + chunk.index * Settings.chunk_size);
+            Block block = Client.model.map.getBlock(index + chunk.pos * Settings.chunk_size);
             if (block == null)
                 return;
             if (block.hidden)
@@ -69,6 +69,10 @@ namespace Game.View {
                 vertices.Add(Conv.ert(Client.view.cubeverts[i] + index.Float()));
             for (int i = 0; i < Client.view.cubetris.Length; i++)
                 triangles.Add(Client.view.cubetris[i] + offset);
+        }
+
+        public void destroy() {
+            GameObject.Destroy(obj);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Game.Controller {
         Vec2 mouse = new Vec2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
         public float conv = 3.14159265358979f / 180f;
         float lsens = 5f;//lookove senitivity
-        float msens = 0.01f;//move senitivity
+        float msens = 0.1f;//move senitivity
 
         public PlayerController() {
 
@@ -55,6 +55,11 @@ namespace Game.Controller {
             Client.model.player.vel.x += relacc.x * (float)Math.Cos(Client.view.camera.ha * conv) + relacc.z * (float)Math.Sin(Client.view.camera.ha * conv);
             Client.model.player.vel.z += relacc.z * (float)Math.Cos(Client.view.camera.ha * conv) - relacc.x * (float)Math.Sin(Client.view.camera.ha * conv);
             Client.model.player.pos += Client.model.player.vel;
+            IntVec3 chunkpos = (Client.model.player.pos / 16).Floor();
+            if (chunkpos == Client.model.map.chunkpos)
+                return;
+            Client.model.map.setChunkPos(chunkpos);
+            Client.view.world.move(chunkpos - Client.model.map.chunkpos);
         }
 
         void point() {
