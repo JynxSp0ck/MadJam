@@ -61,6 +61,14 @@ namespace Game.Utility {
             return new Vec3(x, y, z);
         }
 
+        public int mag2() {
+            return x * x + y * y + z * z;
+        }
+
+        public float mag() {
+            return (float)Math.Sqrt(mag2());
+        }
+
         public IntVec3 clone() {
             return new IntVec3(x, y, z);
         }

@@ -14,10 +14,18 @@ namespace Game.Controller {
         }
 
         public void init() {
+            Cursor.lockState = CursorLockMode.Locked;
             playcon = new PlayerController();
         }
 
         public void update() {
+            if (Input.GetKeyDown(KeyCode.Escape)) {
+                #if UNITY_EDITOR
+                    UnityEditor.EditorApplication.isPlaying = false;
+                #else
+                    Application.Quit();
+                #endif
+            }
             playcon.update();
         }
     }

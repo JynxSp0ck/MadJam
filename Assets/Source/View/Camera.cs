@@ -16,8 +16,9 @@ namespace Game.View {
         }
 
         public void update() {
+            pos = Client.model.player.pos;
             camera.transform.position = Conv.ert(pos);
-            camera.transform.rotation = Quaternion.Euler(Conv.ert(new Vec3(0, ha, va)));
+            camera.transform.rotation = Quaternion.Euler(Conv.ert(new Vec3(va, ha, 0)));
         }
     }
 }

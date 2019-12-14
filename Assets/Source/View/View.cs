@@ -13,11 +13,11 @@ namespace Game.View {
         }
 
         public void init() {
-
+            camera = new Camera();
         }
 
         public void update() {
-
+            camera.update();
         }
     }
 }

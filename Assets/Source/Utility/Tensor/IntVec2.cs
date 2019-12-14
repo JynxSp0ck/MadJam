@@ -59,6 +59,14 @@ namespace Game.Utility {
             return new Vec2(x, y);
         }
 
+        public int mag2() {
+            return x * x + y * y;
+        }
+
+        public float mag() {
+            return (float)Math.Sqrt(mag2());
+        }
+
         public IntVec2 clone() {
             return new IntVec2(x, y);
         }
