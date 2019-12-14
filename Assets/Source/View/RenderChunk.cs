@@ -34,6 +34,7 @@ namespace Game.View {
             filter = obj.AddComponent<MeshFilter>();
             renderer = obj.AddComponent<MeshRenderer>();
             renderer.material = Client.view.materials.block;
+            collider = obj.AddComponent<MeshCollider>();
             setMesh();
         }
 
@@ -53,7 +54,8 @@ namespace Game.View {
             mesh.triangles = triangles.ToArray();
             mesh.RecalculateNormals();
             mesh.RecalculateBounds();
-            filter.mesh = mesh;
+            filter.sharedMesh = mesh;
+            collider.sharedMesh = mesh;
         }
 
         void setBlock(IntVec3 index) {

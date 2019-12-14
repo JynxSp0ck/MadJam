@@ -19,6 +19,7 @@ namespace Game.Controller {
         public void update() {
             look();
             move();
+            mineBlock();
         }
 
         void look() {
@@ -57,10 +58,21 @@ namespace Game.Controller {
             Client.model.player.pos += Client.model.player.vel;
         }
 
-        void point() {
+        IntVec3 point() {
             RaycastHit hit;
             Ray ray = UnityEngine.Camera.main.ScreenPointToRay(Input.mousePosition);
             bool result = Physics.Raycast(ray, out hit, 10000f);
+            if (result == false)
+                return null;
+            IntVec3 point = (Conv.ert(hit.point) + Conv.ert(ray.direction) / 100).Floor();
+            return point;
+        }
+
+        void mineBlock() {
+            if (Input.GetMouseButtonDown(1)) {
+                Block block = Client.model.map.getBlock(point());
+                block = new Block("air");
+            }  
         }
     }
 }
