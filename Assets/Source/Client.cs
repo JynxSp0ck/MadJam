@@ -32,7 +32,10 @@ namespace Game {
             clock = new Stopwatch();
             clock.Start();
 
-            float[] data = Noise.random(10, new IntVec3(0, 0, 0));
+            float[] data1 = Noise.random(10, new IntVec3(0, 0, 0));
+            for (int i = 0; i < data1.Length; i++) {
+                UnityEngine.Debug.Log(data1[i]);
+            }
         }
 
         // Update is called once per frame

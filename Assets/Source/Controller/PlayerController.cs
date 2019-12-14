@@ -56,5 +56,11 @@ namespace Game.Controller {
             Client.model.player.vel.z += relacc.z * (float)Math.Cos(Client.view.camera.ha * conv) - relacc.x * (float)Math.Sin(Client.view.camera.ha * conv);
             Client.model.player.pos += Client.model.player.vel;
         }
+
+        void point() {
+            RaycastHit hit;
+            Ray ray = UnityEngine.Camera.main.ScreenPointToRay(Input.mousePosition);
+            bool result = Physics.Raycast(ray, out hit, 10000f);
+        }
     }
 }
