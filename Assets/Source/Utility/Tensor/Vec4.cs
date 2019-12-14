@@ -63,6 +63,10 @@ namespace Game.Utility {
             return new IntVec4((int)x, (int)y, (int)z, (int)w);
         }
 
+        public IntVec4 Floor() {
+            return new IntVec4((int)Math.Floor(x), (int)Math.Floor(y), (int)Math.Floor(z), (int)Math.Floor(w));
+        }
+
         public float mag2() {
             return x * x + y * y + z * z + w * w;
         }
