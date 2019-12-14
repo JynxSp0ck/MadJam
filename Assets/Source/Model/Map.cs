@@ -47,6 +47,14 @@ namespace Game.Model {
             }
         }
 
+        public IntVec3 getChunkIndex(IntVec3 pos) {
+            IntVec3 localindex = (pos.Float() / Settings.chunk_size).Floor();
+            IntVec3 cindex = localindex - chunkpos;
+            if (cindex.x < -Settings.offset || cindex.y < -Settings.offset || cindex.z < -Settings.offset || cindex.x > Settings.offset || cindex.y > Settings.offset || cindex.z > Settings.offset)
+                return null;
+            return cindex + new IntVec3(Settings.offset, Settings.offset, Settings.offset);
+        }
+
         public Chunk getChunk(IntVec3 pos) {
             IntVec3 localindex = (pos.Float() / Settings.chunk_size).Floor();
             IntVec3 cindex = localindex - chunkpos;
