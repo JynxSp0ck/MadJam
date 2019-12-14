@@ -15,6 +15,7 @@ namespace Game {
         public static Model.Model model;
         public static View.View view;
         public static Controller.Controller controller;
+        public static int seed = 1;
 
         Stopwatch clock;
         long lastTime = 0;
@@ -30,6 +31,8 @@ namespace Game {
             controller.init();
             clock = new Stopwatch();
             clock.Start();
+
+            float[] data = Noise.random(10, new IntVec3(0, 0, 0));
         }
 
         // Update is called once per frame

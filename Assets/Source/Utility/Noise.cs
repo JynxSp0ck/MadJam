@@ -248,6 +248,22 @@ namespace Game.Utility {
             File.WriteAllBytes("comptex.png", t.EncodeToPNG());
         }
 
+        public static float[] random(int size, IntVec3 seed) {
+            int count = size * size;
+            ComputeBuffer cb = new ComputeBuffer(count, 32);
+            cs.SetInt("_Size", 1);
+            cs.SetInt("_Key0", Client.seed);
+            cs.SetInt("_Key1", seed.x);
+            cs.SetInt("_Key2", seed.y);
+            cs.SetInt("_Key3", seed.z);
+            cs.SetBuffer(wnk, "_Result", cb);
+            int threads = (int)Mathf.Ceil(count / 512f);
+            cs.Dispatch(wnk, threads, 1, 1);
+            float[] data = new float[threads * 512];
+            cb.GetData(data);
+            return data;
+        }
+
         public float[,] getData() {
             float[,] result = new float[size, size];
             cb.GetData(result);

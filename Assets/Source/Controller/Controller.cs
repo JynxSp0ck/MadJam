@@ -16,7 +16,6 @@ namespace Game.Controller {
         public void init() {
             Cursor.lockState = CursorLockMode.Locked;
             playcon = new PlayerController();
-            Debug.Log("" + (int)(-1.5));
         }
 
         public void update() {
