@@ -24,6 +24,8 @@ namespace Game.View {
 
         void setBlock(Game.Utility.IntVec3 index) {
             Game.Model.Block block = Client.model.map.getBlock(index + chunk.pos * Game.Model.Settings.chunk_size);
+            Game.Utility.Vec2 pos = block.type.rectpos;
+            Game.Utility.Vec2 dim = block.type.rectdim;
             if (block == null)
                 return;
             if (block.hidden)
@@ -36,7 +38,7 @@ namespace Game.View {
                 mesh.vertices.Add(MeshGenerator.cube.vertices[i] + index.Float());
 
             for (int i = 0; i < MeshGenerator.cube.coords.Count; i++)
-                mesh.coords.Add(MeshGenerator.cube.coords[i]);//TODO block spritemap offset
+                mesh.coords.Add(new Game.Utility.Vec2(MeshGenerator.cube.coords[i].x * dim.x, MeshGenerator.cube.coords[i].y * dim.y) + pos);
 
             for (int i = 0; i < MeshGenerator.cube.triangles.Count; i++)
                 mesh.triangles.Add(MeshGenerator.cube.triangles[i] + offset);

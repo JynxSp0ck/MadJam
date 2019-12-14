@@ -10,9 +10,12 @@ namespace Game.View {
 
         public RenderChunk[,,] chunks;
         public MeshGenerator generator;
+        public Texture2D spritemap;
 
         public World() {
             obj = Find.name(Client.view.obj, "Chunks");
+            spritemap = new TextureLoader().load();
+            Client.view.materials.setSpriteMap(spritemap);
             chunks = new RenderChunk[Settings.map_size, Settings.map_size, Settings.map_size];
             for (int i = 0; i < Settings.map_size; i++) {
                 for (int j = 0; j < Settings.map_size; j++) {

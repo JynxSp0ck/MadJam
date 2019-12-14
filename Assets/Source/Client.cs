@@ -24,6 +24,9 @@ namespace Game {
             Settings.calculate();
             random = new System.Random();
             Noise.init(cs);
+
+            new TextureGenerator().generate();
+
             model = new Model.Model();
             view = new View.View();
             controller = new Controller.Controller();

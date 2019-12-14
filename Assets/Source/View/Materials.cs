@@ -9,7 +9,11 @@ namespace Game.View {
         public Material block;
 
         public Materials() {
-            block = new Material(Shader.Find("Standard"));
+            block = new Material(Shader.Find("BlockShader"));
+        }
+
+        public void setSpriteMap(Texture2D spritemap) {
+            block.SetTexture("_Texture", spritemap);
         }
     }
 }

@@ -28,6 +28,8 @@ namespace Game.Model {
         public string name;
         public int index;
         public bool transparent;
+        public Vec2 rectpos;
+        public Vec2 rectdim;
 
         public BlockType(string name, int index, bool transparent) {
             this.name = name;
