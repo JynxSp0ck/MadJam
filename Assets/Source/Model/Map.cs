@@ -82,13 +82,13 @@ namespace Game.Model {
 
         public Block getBlock(IntVec3 pos) {
             if (pos == null)
-                return new Block("air");
+                return new Block("error");
             IntVec3 localindex = (pos.Float() / Settings.chunk_size).Floor();
             Chunk chunk = getChunk(pos);
             if (chunk == null)
-                return new Block("air");
+                return new Block("error");
             if (!chunk.loaded)
-                return new Block("air");
+                return new Block("error");
             IntVec3 bindex = pos - localindex * Settings.chunk_size;
             return chunk.blocks[bindex.x, bindex.y, bindex.z];
         }

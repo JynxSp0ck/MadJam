@@ -16,6 +16,7 @@ namespace Game.Model {
         }
 
         void setupblocks() {
+            BlockType.add("error", true, false, 0);
             BlockType.add("air", true, false, 0);
             BlockType.add("dirt", false, true, 10);
             BlockType.add("coal", false, true, 40);
