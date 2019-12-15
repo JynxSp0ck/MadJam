@@ -34,7 +34,7 @@ namespace Game.View {
         }
 
         void process(MeshTask task) {
-            IntVec3 pos = Client.model.map.getChunkIndex(task.chunk.pos * Settings.chunk_size);
+            IntVec3 pos = Client.view.world.getChunkIndex(task.chunk.pos * Settings.chunk_size);
             if (pos == null)
                 return;
             RenderChunk rc = Client.view.world.chunks[pos.x, pos.y, pos.z];

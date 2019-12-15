@@ -28,19 +28,14 @@ namespace Game.Controller {
         public void update() {
             if (Input.GetKeyDown(KeyCode.Escape)) {
                 cio.save();
-                for (int i = 0; i < Settings.map_size; i++) {
-                    for (int j = 0; j < Settings.map_size; j++) {
-                        for (int k = 0; k < Settings.map_size; k++) {
-                            Chunk chunk = Client.model.map.chunks[i, j, k];
-                            if (chunk != null && chunk.loaded && !chunk.saved) {
-                                ChunkTask task = new ChunkTask("save", chunk);
-                                task.start();
-                            }
-                        }
+                foreach (Chunk chunk in Client.model.map.chunks) {
+                    if (chunk != null && chunk.loaded && !chunk.saved) {
+                        ChunkTask task = new ChunkTask("save", chunk);
+                        task.start();
                     }
                 }
-#if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;
+                #if UNITY_EDITOR
+                    UnityEditor.EditorApplication.isPlaying = false;
                 #else
                     Application.Quit();
                 #endif

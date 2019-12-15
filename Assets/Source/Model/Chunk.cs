@@ -8,6 +8,7 @@ namespace Game.Model {
         public string name;
         public Block[,,] blocks;
         public float[] data;
+        public bool started = false;
         public bool loaded = false;
         public bool saved = false;
 
@@ -23,6 +24,12 @@ namespace Game.Model {
                 }
             }
             data = Noise.random(512, Client.seed, pos);
+        }
+
+        public Block getBlock(IntVec3 index) {
+            if (index.x < 0 || index.y < 0 || index.z < 0 || index.x >= Settings.chunk_size || index.y >= Settings.chunk_size || index.z >= Settings.chunk_size)
+                return new Block(BlockType.get("error"));
+            return blocks[index.x, index.y, index.z];
         }
 
         public void depricate() {

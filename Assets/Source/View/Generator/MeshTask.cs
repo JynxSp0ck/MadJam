@@ -24,29 +24,29 @@ namespace Game.View {
 
         bool transparentNeighbor(Game.Utility.IntVec3 index) {
             Game.Model.Block block;
-            block = Client.model.map.getBlock(index + new Utility.IntVec3(1, 0, 0));
+            block = chunk.getBlock(index + new Utility.IntVec3(1, 0, 0));
             if (block.type.transparent)
                 return true;
-            block = Client.model.map.getBlock(index + new Utility.IntVec3(0, 1, 0));
+            block = chunk.getBlock(index + new Utility.IntVec3(0, 1, 0));
             if (block.type.transparent)
                 return true;
-            block = Client.model.map.getBlock(index + new Utility.IntVec3(0, 0, 1));
+            block = chunk.getBlock(index + new Utility.IntVec3(0, 0, 1));
             if (block.type.transparent)
                 return true;
-            block = Client.model.map.getBlock(index + new Utility.IntVec3(-1, 0, 0));
+            block = chunk.getBlock(index + new Utility.IntVec3(-1, 0, 0));
             if (block.type.transparent)
                 return true;
-            block = Client.model.map.getBlock(index + new Utility.IntVec3(0, -1, 0));
+            block = chunk.getBlock(index + new Utility.IntVec3(0, -1, 0));
             if (block.type.transparent)
                 return true;
-            block = Client.model.map.getBlock(index + new Utility.IntVec3(0, 0, -1));
+            block = chunk.getBlock(index + new Utility.IntVec3(0, 0, -1));
             if (block.type.transparent)
                 return true;
             return false;
         }
 
         void setBlock(Game.Utility.IntVec3 index) {
-            Game.Model.Block block = Client.model.map.getBlock(index + chunk.pos * Game.Model.Settings.chunk_size);
+            Game.Model.Block block = chunk.getBlock(index);
             if (block == null)
                 return;
             if (block.hidden)

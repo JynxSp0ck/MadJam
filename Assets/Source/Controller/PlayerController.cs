@@ -84,10 +84,9 @@ namespace Game.Controller {
             Client.model.player.pos.z += Client.model.player.vel.z;
 
             IntVec3 chunkpos = (Client.model.player.pos / 16).Floor();
-            if (chunkpos == Client.model.map.chunkpos)
+            if (chunkpos == Client.view.world.chunkpos)
                 return;
-            IntVec3 delta = chunkpos - Client.model.map.chunkpos;
-            Client.model.map.setChunkPos(chunkpos);
+            IntVec3 delta = chunkpos - Client.view.world.chunkpos;
             Client.view.world.move(delta);
         }
 
@@ -157,9 +156,9 @@ namespace Game.Controller {
                         if (block.type.mineable)
                             Client.model.player.character.inventory.add(new Stack(block.type, 1));
                         block.type = BlockType.get("air");
-                        IntVec3 index = Client.model.map.getChunkIndex(bindex);
-                        if (index != null) {
-                            Client.model.map.chunks[index.x, index.y, index.z].depricate();
+                        Chunk chunk = Client.model.map.getChunk(bindex);
+                        if (chunk != null) {
+                            chunk.depricate();
                             Client.view.world.blockUpdate(bindex);
                         }
                     }
@@ -184,10 +183,10 @@ namespace Game.Controller {
                             block.type = stack.type;
                         }
                     }
-                    IntVec3 index = Client.model.map.getChunkIndex(bindex);
-                    if (index != null) {
-                        Client.model.map.chunks[index.x, index.y, index.z].depricate();
-                        Client.view.world.chunks[index.x, index.y, index.z].depricate();
+                    Chunk chunk = Client.model.map.getChunk(bindex);
+                    if (chunk != null) {
+                        chunk.depricate();
+                        Client.view.world.blockUpdate(bindex);
                     }
                 }
             }

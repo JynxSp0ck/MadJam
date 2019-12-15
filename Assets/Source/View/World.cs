@@ -9,6 +9,7 @@ namespace Game.View {
         public GameObject obj;
         public GameObject chunkobj;
 
+        public IntVec3 chunkpos = new IntVec3(0, 0, 0);
         public RenderChunk[,,] chunks;
         public MeshGenerator generator;
         public Texture2D spritemap;
@@ -48,7 +49,7 @@ namespace Game.View {
                 for (int j = -Settings.load_distance; j <= Settings.load_distance; j++) {
                     for (int k = -Settings.load_distance; k <= Settings.load_distance; k++) {
                         if (chunks[i + Settings.offset, j + Settings.offset, k + Settings.offset] == null) {
-                            Chunk chunk = Client.model.map.getChunk((new IntVec3(i, j, k) + Client.model.map.chunkpos) * Settings.chunk_size);
+                            Chunk chunk = Client.model.map.getChunk((new IntVec3(i, j, k) + chunkpos) * Settings.chunk_size);
                             if (chunk != null && chunk.loaded) {
                                 chunks[i + Settings.offset, j + Settings.offset, k + Settings.offset] = new RenderChunk(chunk);
                                 chunks[i + Settings.offset, j + Settings.offset, k + Settings.offset].generate();
@@ -63,6 +64,7 @@ namespace Game.View {
         }
 
         public void move(IntVec3 delta) {
+            Debug.Log(delta.x + ", " + delta.y + ", " + delta.z);
             RenderChunk[,,] newchunks = new RenderChunk[Settings.map_size, Settings.map_size, Settings.map_size];
             for (int i = 0; i < Settings.map_size; i++) {
                 for (int j = 0; j < Settings.map_size; j++) {
@@ -85,16 +87,31 @@ namespace Game.View {
                 }
             }
             chunks = newchunks;
+            chunkpos += delta;
+        }
+
+        public bool chunkOnMap(IntVec3 pos) {
+            return pos.x >= 0 && pos.y >= 0 && pos.z >= 0 && pos.x < Settings.map_size && pos.y < Settings.map_size && pos.z < Settings.map_size;
+        }
+
+        public IntVec3 getChunkIndex(IntVec3 pos) {
+            if (pos == null)
+                return null;
+            IntVec3 localindex = (pos.Float() / Settings.chunk_size).Floor();
+            IntVec3 cindex = localindex - chunkpos + new IntVec3(Settings.offset, Settings.offset, Settings.offset);
+            if (!chunkOnMap(cindex))
+                return null;
+            return cindex;
         }
 
         public void blockUpdate(IntVec3 pos) {
-            depricate(Client.model.map.getChunkIndex(pos + new IntVec3(0, 0, 0)));
-            depricate(Client.model.map.getChunkIndex(pos + new IntVec3(1, 0, 0)));
-            depricate(Client.model.map.getChunkIndex(pos + new IntVec3(0, 1, 0)));
-            depricate(Client.model.map.getChunkIndex(pos + new IntVec3(0, 0, 1)));
-            depricate(Client.model.map.getChunkIndex(pos + new IntVec3(-1, 0, 0)));
-            depricate(Client.model.map.getChunkIndex(pos + new IntVec3(0, -1, 0)));
-            depricate(Client.model.map.getChunkIndex(pos + new IntVec3(0, 0, -1)));
+            depricate(getChunkIndex(pos + new IntVec3(0, 0, 0)));
+            depricate(getChunkIndex(pos + new IntVec3(1, 0, 0)));
+            depricate(getChunkIndex(pos + new IntVec3(0, 1, 0)));
+            depricate(getChunkIndex(pos + new IntVec3(0, 0, 1)));
+            depricate(getChunkIndex(pos + new IntVec3(-1, 0, 0)));
+            depricate(getChunkIndex(pos + new IntVec3(0, -1, 0)));
+            depricate(getChunkIndex(pos + new IntVec3(0, 0, -1)));
         }
 
         void depricate(IntVec3 index) {

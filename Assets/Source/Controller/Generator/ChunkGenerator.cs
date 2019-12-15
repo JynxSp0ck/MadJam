@@ -29,29 +29,20 @@ namespace Game.Controller {
         }
 
         public void generateChunks() {
-            for (int i = -Settings.load_distance; i <= Settings.load_distance; i++) {
-                for (int j = -Settings.load_distance; j <= Settings.load_distance; j++) {
-                    for (int k = -Settings.load_distance; k <= Settings.load_distance; k++) {
-                        Chunk chunk = Client.model.map.chunks[i + Settings.offset, j + Settings.offset, k + Settings.offset];
-                        if (chunk == null) {
-                            chunk = new Chunk(new IntVec3(i, j, k) + Client.model.map.chunkpos);
-                            Client.model.map.chunks[i + Settings.offset, j + Settings.offset, k + Settings.offset] = chunk;
-                            add(File.Exists("Maps/" + Client.model.map.name + "/" + chunk.name) ? "load" : "generate", chunk);
-                        }
-                    }
+            List<Chunk> chunks = Client.model.map.createChunks(Client.model.player.pos, Settings.load_distance);
+            foreach (Chunk chunk in chunks) {
+                if (!chunk.started) {
+                    chunk.started = true;
+                    add(File.Exists("Maps/" + Client.model.map.name + "/" + chunk.name) ? "load" : "generate", chunk);
                 }
             }
+            Client.model.map.chunks = Client.model.map.getChunks(Client.model.player.pos, Settings.offset);
         }
 
         public void saveChunks() {
-            for (int i = 0; i < Settings.map_size; i++) {
-                for (int j = 0; j < Settings.map_size; j++) {
-                    for (int k = 0; k < Settings.map_size; k++) {
-                        Chunk chunk = Client.model.map.chunks[i, j, k];
-                        if (chunk != null && chunk.loaded && !chunk.saved) {
-                            add("save", chunk);
-                        }
-                    }
+            foreach (Chunk chunk in Client.model.map.chunks) {
+                if (chunk != null && chunk.loaded && !chunk.saved) {
+                    add("save", chunk);
                 }
             }
         }
