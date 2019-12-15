@@ -35,6 +35,18 @@ namespace Game.View {
             }
         }
 
+        public void upPage() {
+            page--;
+            if (page < 0)
+                page = 0;
+        }
+
+        public void downPage() {
+            page++;
+            if (page >= Client.model.player.character.inventory.slots.Length / per)
+                page = Client.model.player.character.inventory.slots.Length / per - 1;
+        }
+
         public int getSelected() {
             return selected + page * per;
         }

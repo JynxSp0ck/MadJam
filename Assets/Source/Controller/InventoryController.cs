@@ -23,6 +23,10 @@ namespace Game.Controller {
                 selected = 3;
             if (Input.GetKeyDown(KeyCode.Alpha5))
                 selected = 4;
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+                Client.view.ui.inventoryview.upPage();
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+                Client.view.ui.inventoryview.downPage();
             if (selected >= 0)
                 Client.view.ui.inventoryview.selected = selected;
         }
