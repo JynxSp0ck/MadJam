@@ -112,14 +112,13 @@ namespace Game.Controller {
             return Conv.ert(hit.point) + Conv.ert(ray.direction) / 100;
         }
 
-        IntVec3 pointplace() {
+        Vec3 pointplace() {
             RaycastHit hit;
             Ray ray = UnityEngine.Camera.main.ScreenPointToRay(Input.mousePosition);
             bool result = Physics.Raycast(ray, out hit, 10000f);
             if (result == false)
                 return null;
-            IntVec3 point = (Conv.ert(hit.point) - Conv.ert(ray.direction) / 100).Floor();
-            return point;
+            return Conv.ert(hit.point) - Conv.ert(ray.direction) / 100;
         }
 
         void mineBlock() {
@@ -150,13 +149,23 @@ namespace Game.Controller {
 
         void placeBlock() {
             if (Input.GetMouseButtonDown(1)) {
-                IntVec3 Point = pointplace();
-                Block block = Client.model.map.getBlock(Point);
-                block.type = BlockType.get("dirt");
-                IntVec3 index = Client.model.map.getChunkIndex(Point);
-                if (index != null) {
-                    Client.model.map.chunks[index.x, index.y, index.z].depricate();
-                    Client.view.world.chunks[index.x, index.y, index.z].depricate();
+                Vec3 point = pointplace();
+                float dist = (point - (Client.model.player.pos + new Vec3(0, 1, 0))).mag();
+                if (dist <= Client.model.player.character.range) {
+                    IntVec3 bindex = point.Floor();
+                    Block block = Client.model.map.getBlock(bindex);
+                    Stack stack = Client.model.player.character.inventory.slots[Client.view.ui.inventoryview.getSelected()];
+                    if (stack.type != null) {
+                        if (stack.count > 0 && stack.type.mineable) {
+                            stack.count--;
+                            block.type = stack.type;
+                        }
+                    }
+                    IntVec3 index = Client.model.map.getChunkIndex(bindex);
+                    if (index != null) {
+                        Client.model.map.chunks[index.x, index.y, index.z].depricate();
+                        Client.view.world.chunks[index.x, index.y, index.z].depricate();
+                    }
                 }
             }
         }

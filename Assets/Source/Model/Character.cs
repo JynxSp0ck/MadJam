@@ -10,7 +10,7 @@ namespace Game.Model {
         public Vec3 vel = new Vec3(0, 0, 0);
         public float dig = 0;
         public float digspeed = 0.02f;
-        public float range = 2.5f;
+        public float range = 3.5f;
 
         public Character(string name) {
             this.name = name;
