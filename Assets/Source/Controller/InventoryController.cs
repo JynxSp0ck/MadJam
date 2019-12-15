@@ -12,7 +12,11 @@ namespace Game.Controller {
         }
 
         public void update() {
-            int selected = -1;
+            int selected = Client.view.ui.inventoryview.selected;
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+                selected--;
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+                selected++;
             if (Input.GetKeyDown(KeyCode.Alpha1))
                 selected = 0;
             if (Input.GetKeyDown(KeyCode.Alpha2))
@@ -27,8 +31,11 @@ namespace Game.Controller {
                 Client.view.ui.inventoryview.upPage();
             if (Input.GetKeyDown(KeyCode.RightArrow))
                 Client.view.ui.inventoryview.downPage();
-            if (selected >= 0)
-                Client.view.ui.inventoryview.selected = selected;
+            if (selected < 0)
+                selected = 0;
+            if (selected > 4)
+                selected = 4;
+            Client.view.ui.inventoryview.selected = selected;
         }
     }
 }

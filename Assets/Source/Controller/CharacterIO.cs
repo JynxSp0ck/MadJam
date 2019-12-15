@@ -20,6 +20,7 @@ namespace Game.Controller {
 
         void saveCharacterList() {
             List<string> text = new List<string>();
+            text.Add(""+Client.model.money);
             foreach (Character character in Client.model.characters)
                 text.Add(character.name);
             File.WriteAllLines("Maps/" + Client.model.map.name + "/charlist.txt", text);
@@ -49,6 +50,7 @@ namespace Game.Controller {
                 return;
             }
             Reader r = new Reader("Maps/" + Client.model.map.name + "/charlist.txt");
+            Client.model.money = int.Parse(r.read());
             while (!r.EOF()) {
                 loadCharacter(r.read());
             }

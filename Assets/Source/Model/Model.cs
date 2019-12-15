@@ -4,6 +4,7 @@ using Game.Utility;
 
 namespace Game.Model {
     class Model {
+        public int money = 0;
         public Player player;
         public List<Character> characters;
         public Map map;

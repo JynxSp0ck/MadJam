@@ -7,6 +7,7 @@ using Game.Utility;
 namespace Game.View {
     class UI {
         public GameObject obj;
+        public MoneyView moneyview;
         public InventoryView inventoryview;
 
         public UI(GameObject obj) {
@@ -15,10 +16,12 @@ namespace Game.View {
 
         public void init() {
             inventoryview = new InventoryView();
+            moneyview = new MoneyView();
         }
 
         public void update() {
             inventoryview.update();
+            moneyview.update();
         }
     }
 }

@@ -53,7 +53,7 @@ namespace Game.View {
                 return;
             if (block.type.transparent)
                 return;
-            if (!transparentNeighbor(index + chunk.pos * Game.Model.Settings.chunk_size))
+            if (!transparentNeighbor(index))
                 return;
             Game.Utility.Vec2 pos = block.type.rectpos;
             Game.Utility.Vec2 dim = block.type.rectdim;
