@@ -6,23 +6,21 @@ using Game.Utility;
 
 namespace Game.View {
     class View {
-        public GameObject obj;
-
         public Camera camera;
         public UI ui;
         public World world;
         public Materials materials;
 
         public View() {
-            obj = Find.name("World");
         }
 
-        public void init() {
+        public void init(GameObject canvas, GameObject world) {
             materials = new Materials();
             camera = new Camera();
-            ui = new UI();
-            world = new World();
-            world.setChunks();
+            ui = new UI(canvas);
+            ui.init();
+            this.world = new World(world);
+            this.world.setChunks();
         }
 
         public void update() {

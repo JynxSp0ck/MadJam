@@ -11,6 +11,8 @@ namespace Game {
     class Client : MonoBehaviour {
         public static System.Random random;
         public ComputeShader cs;
+        public GameObject canvas;
+        public GameObject world;
 
         public static Model.Model model;
         public static View.View view;
@@ -22,6 +24,9 @@ namespace Game {
         public static long time { get { return lastTime; } }
         // Start is called before the first frame update
         void Start() {
+            if (!System.IO.Directory.Exists("Maps"))
+                System.IO.Directory.CreateDirectory("Maps");
+
             Settings.calculate();
             random = new System.Random();
             Noise.init(cs);
@@ -31,7 +36,7 @@ namespace Game {
             model = new Model.Model();
             view = new View.View();
             controller = new Controller.Controller();
-            view.init();
+            view.init(canvas, world);
             controller.init();
             clock = new Stopwatch();
             clock.Start();

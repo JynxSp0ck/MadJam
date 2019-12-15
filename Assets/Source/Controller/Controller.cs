@@ -8,6 +8,8 @@ using Game.Utility;
 namespace Game.Controller {
     class Controller {
         PlayerController playcon;
+        InventoryController invcon;
+        CharacterIO cio;
         public ChunkGenerator chunkgen;
 
         public Controller() {
@@ -17,11 +19,15 @@ namespace Game.Controller {
         public void init() {
             Cursor.lockState = CursorLockMode.Locked;
             playcon = new PlayerController();
+            invcon = new InventoryController();
+            cio = new CharacterIO();
             chunkgen = new ChunkGenerator();
+            cio.load();
         }
 
         public void update() {
             if (Input.GetKeyDown(KeyCode.Escape)) {
+                cio.save();
                 #if UNITY_EDITOR
                     UnityEditor.EditorApplication.isPlaying = false;
                 #else
@@ -29,6 +35,7 @@ namespace Game.Controller {
                 #endif
             }
             playcon.update();
+            invcon.update();
             chunkgen.run();
         }
     }

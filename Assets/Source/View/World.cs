@@ -7,13 +7,15 @@ using Game.Utility;
 namespace Game.View {
     class World {
         public GameObject obj;
+        public GameObject chunkobj;
 
         public RenderChunk[,,] chunks;
         public MeshGenerator generator;
         public Texture2D spritemap;
 
-        public World() {
-            obj = Find.name(Client.view.obj, "Chunks");
+        public World(GameObject obj) {
+            this.obj = obj;
+            chunkobj = Find.name(obj, "Chunks");
             chunks = new RenderChunk[Settings.map_size, Settings.map_size, Settings.map_size];
             for (int i = 0; i < Settings.map_size; i++) {
                 for (int j = 0; j < Settings.map_size; j++) {
@@ -24,7 +26,7 @@ namespace Game.View {
             }
             loadTextures();
             generator = new MeshGenerator();
-            Mesh m = new MeshReader("cube.obj").getMesh();
+            Mesh m = new MeshReader(Resources.Load<TextAsset>("Models/cube").text.Split('\n')).getMesh();
             Vector3[] v = m.vertices;
             for (int i = 0; i < v.Length; i++) {
                 MeshGenerator.cube.vertices.Add(new Vec3(v[i].x, v[i].y, v[i].z));

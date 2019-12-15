@@ -17,7 +17,7 @@ namespace Game.View {
             map = new Texture2D(16, 16, TextureFormat.ARGB32, false);
             List<Texture2D> sprites = new List<Texture2D>();
             for (int i = 0; i < BlockType.types.Count; i++)
-                sprites.Add(Load.texture("Assets/Resources/Textures/" + BlockType.types[i].name + ".png"));
+                sprites.Add(Resources.Load<Texture2D>("Textures/" + BlockType.types[i].name));
             Rect[] rects = map.PackTextures(sprites.ToArray(), 1);
             map.mipMapBias = -10;
             for (int i = 0; i < rects.Length; i++) {
@@ -42,7 +42,7 @@ namespace Game.View {
             map.wrapMode = TextureWrapMode.Clamp;
             map.filterMode = FilterMode.Point;
             map.Apply();
-            File.WriteAllBytes("Assets/Resources/Textures/spritesheet.png", map.EncodeToPNG());
+            //File.WriteAllBytes("Assets/Resources/Textures/spritesheet.png", map.EncodeToPNG());
             return map;
         }
     }

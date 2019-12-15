@@ -5,10 +5,12 @@ using Game.Utility;
 namespace Game.Model {
     class Model {
         public Player player;
+        public List<Character> characters;
         public Map map;
 
         public Model() {
             setupblocks();
+            characters = new List<Character>();
             player = new Player();
             map = new Map("map");
         }

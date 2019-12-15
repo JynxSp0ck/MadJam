@@ -25,6 +25,14 @@ namespace Game.Utility {
             index = 0;
         }
 
+        public Reader(string[] input) {
+            data = new List<string>();
+            data.AddRange(input);
+            for (int i = 0; i < data.Count; i++)
+                data[i] = data[i].Trim();
+            index = 0;
+        }
+
         public string next() {
             if (index < data.Count) {
                 return data[index];

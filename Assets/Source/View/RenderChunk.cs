@@ -31,7 +31,7 @@ namespace Game.View {
             IntVec3 pos = chunk.pos;
             obj = new GameObject("Chunk " + chunk.name);
             obj.transform.position = Conv.ert((pos * Settings.chunk_size).Float());
-            obj.transform.parent = Client.view.world.obj.transform;
+            obj.transform.parent = Client.view.world.chunkobj.transform;
             obj.SetActive(false);
             mesh = new Mesh();
             mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;

@@ -13,7 +13,6 @@ namespace Game.View {
         public Thread thread = null;
 
         public MeshGenerator() {
-
         }
 
         public void run() {

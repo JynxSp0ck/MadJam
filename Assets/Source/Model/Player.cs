@@ -9,7 +9,6 @@ namespace Game.Model {
         public Character character;
 
         public Player() {
-            character = new Character();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Game.View {
         public float va = 0;//vertical angle
 
         public Camera() {
-            camera = Find.name("Camera");
+            camera = UnityEngine.Camera.main.gameObject;
         }
 
         public void update() {

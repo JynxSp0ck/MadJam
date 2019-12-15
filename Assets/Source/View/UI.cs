@@ -6,9 +6,14 @@ using Game.Utility;
 
 namespace Game.View {
     class UI {
-        InventoryView inventoryview;
+        public GameObject obj;
+        public InventoryView inventoryview;
 
-        public UI() {
+        public UI(GameObject obj) {
+            this.obj = obj;
+        }
+
+        public void init() {
             inventoryview = new InventoryView();
         }
 
