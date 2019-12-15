@@ -160,7 +160,7 @@ namespace Game.Controller {
                         IntVec3 index = Client.model.map.getChunkIndex(bindex);
                         if (index != null) {
                             Client.model.map.chunks[index.x, index.y, index.z].depricate();
-                            Client.view.world.chunks[index.x, index.y, index.z].depricate();
+                            Client.view.world.blockUpdate(bindex);
                         }
                     }
                 }

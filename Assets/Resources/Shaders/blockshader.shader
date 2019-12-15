@@ -53,7 +53,7 @@
 				float time = _Time.y / 25;
 				//time = 3.14 / 2;
 				float sunstr = saturate(cos(time) * 2 + 1.3);
-				float moonstr = 0.7 * (1 - sunstr);
+				float moonstr = 0.9 * (1 - sunstr);
 				float hazestr = saturate(1.5 * -cos(time + 0.2) + 0.5) * saturate(cos(time - 0.1) * 2 + 1.8);
 				float3 suncol = float3(1, 1, 1);
 				float3 mooncol = float3(0.7, 0.7, 1);
