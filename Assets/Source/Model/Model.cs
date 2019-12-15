@@ -19,6 +19,7 @@ namespace Game.Model {
             BlockType.add("error", true, false, 0);
             BlockType.add("air", true, false, 0);
             BlockType.add("dirt", false, true, 10);
+            BlockType.add("trash", false, true, 20);
             BlockType.add("coal", false, true, 40);
         }
     }

@@ -87,6 +87,22 @@ namespace Game.View {
             chunks = newchunks;
         }
 
+        public void blockUpdate(IntVec3 pos) {
+            depricate(Client.model.map.getChunkIndex(pos + new IntVec3(0, 0, 0)));
+            depricate(Client.model.map.getChunkIndex(pos + new IntVec3(1, 0, 0)));
+            depricate(Client.model.map.getChunkIndex(pos + new IntVec3(0, 1, 0)));
+            depricate(Client.model.map.getChunkIndex(pos + new IntVec3(0, 0, 1)));
+            depricate(Client.model.map.getChunkIndex(pos + new IntVec3(-1, 0, 0)));
+            depricate(Client.model.map.getChunkIndex(pos + new IntVec3(0, -1, 0)));
+            depricate(Client.model.map.getChunkIndex(pos + new IntVec3(0, 0, -1)));
+        }
+
+        void depricate(IntVec3 index) {
+            if (index == null)
+                return;
+            chunks[index.x, index.y, index.z].depricate();
+        }
+
         public void update() {
             setChunks();
             generator.run();
