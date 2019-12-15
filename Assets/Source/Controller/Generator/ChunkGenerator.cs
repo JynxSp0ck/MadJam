@@ -29,6 +29,7 @@ namespace Game.Controller {
         }
 
         public void generateChunks() {
+            Client.model.map.createChunks(Client.model.player.pos, Settings.load_distance + Settings.data_distance);
             List<Chunk> chunks = Client.model.map.createChunks(Client.model.player.pos, Settings.load_distance);
             foreach (Chunk chunk in chunks) {
                 if (!chunk.started) {

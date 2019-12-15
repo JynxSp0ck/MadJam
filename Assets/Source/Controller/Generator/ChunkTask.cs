@@ -9,6 +9,7 @@ namespace Game.Controller {
         public bool finished = false;
         public string type;
         public Game.Model.Chunk chunk;
+        public Game.Model.Chunk[,,] chunks;
 
         public ChunkTask(string type, Game.Model.Chunk chunk) {
             this.type = type;

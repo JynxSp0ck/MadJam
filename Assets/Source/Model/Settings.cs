@@ -7,7 +7,7 @@ namespace Game.Model {
         public static int chunk_size = 16;
         public static int load_distance = 1;
         public static int memory_distance = 2;
-        public static int data_distance = 2;
+        public static int data_distance = 1;
         public static int offset;
         public static int map_size;
 
