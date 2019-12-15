@@ -7,6 +7,7 @@ namespace Game.Model {
         public IntVec3 pos;
         public string name;
         public Block[,,] blocks;
+        public float[] surf;
         public float[] data;
         public bool started = false;
         public bool loaded = false;
@@ -23,6 +24,7 @@ namespace Game.Model {
                     }
                 }
             }
+            surf = Noise.random(512, Client.seed, new IntVec3(pos.x, 0, pos.z));
             data = Noise.random(512, Client.seed, pos);
         }
 
