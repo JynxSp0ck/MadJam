@@ -103,14 +103,13 @@ namespace Game.Controller {
             Client.view.world.move(delta);
         }
 
-        IntVec3 pointmine() {
+        Vec3 pointmine() {
             RaycastHit hit;
             Ray ray = UnityEngine.Camera.main.ScreenPointToRay(Input.mousePosition);
             bool result = Physics.Raycast(ray, out hit, 10000f);
             if (result == false)
                 return null;
-            IntVec3 point = (Conv.ert(hit.point) + Conv.ert(ray.direction) / 100).Floor();
-            return point;
+            return Conv.ert(hit.point) + Conv.ert(ray.direction) / 100;
         }
 
         IntVec3 pointplace() {
@@ -125,19 +124,32 @@ namespace Game.Controller {
 
         void mineBlock() {
             if (Input.GetMouseButton(0)) {
-                IntVec3 Point = pointmine();
-                Block block = Client.model.map.getBlock(Point);
-                block.type = BlockType.get("air");
-                IntVec3 index = Client.model.map.getChunkIndex(Point);
-                if (index != null) {
-                    Client.model.map.chunks[index.x, index.y, index.z].depricate();
-                    Client.view.world.chunks[index.x, index.y, index.z].depricate();
+                Client.model.player.character.dig += Client.model.player.character.digspeed;
+                if (Client.model.player.character.dig > 1) {
+                    Client.model.player.character.dig = 0;
+                    Vec3 point = pointmine();
+                    float dist = (point - (Client.model.player.pos + new Vec3(0, 1, 0))).mag();
+                    if (dist <= Client.model.player.character.range) {
+                        IntVec3 bindex = point.Floor();
+                        Block block = Client.model.map.getBlock(bindex);
+                        if (block.type.mineable)
+                            Client.model.player.character.inventory.add(new Stack(block.type, 1));
+                        block.type = BlockType.get("air");
+                        IntVec3 index = Client.model.map.getChunkIndex(bindex);
+                        if (index != null) {
+                            Client.model.map.chunks[index.x, index.y, index.z].depricate();
+                            Client.view.world.chunks[index.x, index.y, index.z].depricate();
+                        }
+                    }
                 }
+            }
+            else {
+                Client.model.player.character.dig = 0;
             }
         }
 
         void placeBlock() {
-            if (Input.GetMouseButton(1)) {
+            if (Input.GetMouseButtonDown(1)) {
                 IntVec3 Point = pointplace();
                 Block block = Client.model.map.getBlock(Point);
                 block.type = BlockType.get("dirt");

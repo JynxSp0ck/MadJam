@@ -7,6 +7,7 @@ namespace Game.Model {
         public IntVec3 pos;
         public string name;
         public Block[,,] blocks;
+        public float[] data;
         public bool loaded = false;
         public bool saved = false;
 
@@ -21,6 +22,7 @@ namespace Game.Model {
                     }
                 }
             }
+            data = Noise.random(512, Client.seed, pos);
         }
 
         public void depricate() {

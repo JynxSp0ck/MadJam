@@ -6,8 +6,8 @@ namespace Game.Model {
     class BlockType {
         public static List<BlockType> types = new List<BlockType>();
 
-        public static void add(string name, bool transparent) {
-            types.Add(new BlockType(name, types.Count, transparent));
+        public static void add(string name, bool transparent, bool mineable, int stacklimit) {
+            types.Add(new BlockType(name, types.Count, transparent, mineable, stacklimit));
         }
 
         public static BlockType get(string name) {
@@ -28,13 +28,17 @@ namespace Game.Model {
         public string name;
         public int index;
         public bool transparent;
+        public bool mineable;
+        public int stacklimit;
         public Vec2 rectpos;
         public Vec2 rectdim;
 
-        public BlockType(string name, int index, bool transparent) {
+        public BlockType(string name, int index, bool transparent, bool mineable, int stacklimit) {
             this.name = name;
             this.index = index;
             this.transparent = transparent;
+            this.mineable = mineable;
+            this.stacklimit = stacklimit;
         }
     }
 }

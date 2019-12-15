@@ -18,7 +18,8 @@ namespace Game {
         public static int seed = 1;
 
         Stopwatch clock;
-        long lastTime = 0;
+        static long lastTime = 0;
+        public static long time { get { return lastTime; } }
         // Start is called before the first frame update
         void Start() {
             Settings.calculate();
@@ -40,9 +41,9 @@ namespace Game {
         void Update() {
             long time = clock.ElapsedMilliseconds;
             if (time - lastTime > 10) {
+                lastTime = time;
                 controller.update();
                 view.update();
-                lastTime = time;
             }
         }
     }

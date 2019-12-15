@@ -248,14 +248,14 @@ namespace Game.Utility {
             File.WriteAllBytes("comptex.png", t.EncodeToPNG());
         }
 
-        public static float[] random(int size, IntVec3 seed) {
+        public static float[] random(int size, int seed, IntVec3 pos) {
             int count = size * size;
             ComputeBuffer cb = new ComputeBuffer(count, 32);
             cs.SetInt("_Size", 1);
-            cs.SetInt("_Key0", Client.seed);
-            cs.SetInt("_Key1", seed.x);
-            cs.SetInt("_Key2", seed.y);
-            cs.SetInt("_Key3", seed.z);
+            cs.SetInt("_Key0", seed);
+            cs.SetInt("_Key1", pos.x);
+            cs.SetInt("_Key2", pos.y);
+            cs.SetInt("_Key3", pos.z);
             cs.SetBuffer(wnk, "_Result", cb);
             int threads = (int)Mathf.Ceil(count / 512f);
             cs.Dispatch(wnk, threads, 1, 1);
