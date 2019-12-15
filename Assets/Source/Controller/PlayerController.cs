@@ -39,9 +39,20 @@ namespace Game.Controller {
 
         void move() {
             Vec3 relacc = new Vec3(0, 0, 0);
-            Client.model.player.vel *= 0.95f;
+            Client.model.player.vel.y *= 0.95f;
+            Client.model.player.vel.x *= 0.9f;
+            Client.model.player.vel.z *= 0.9f;
             relacc.y = -0.01f;
             Block block = Client.model.map.getBlock((Client.model.player.pos - new Vec3(0, 0.01f, 0)).Floor());
+            float mspeed = msens;
+            if (block.type != BlockType.get("air")) {
+                if (Input.GetKey(KeyCode.Space)) {
+                    relacc.y += 0.25f;
+                }
+            }
+            else {
+                mspeed /= 2;
+            }
             if (Input.GetKey(KeyCode.W)) {
                 relacc.z += msens;
             }
@@ -54,53 +65,65 @@ namespace Game.Controller {
             if (Input.GetKey(KeyCode.A)) {
                 relacc.x -= msens;
             }
-            if (block.type != BlockType.get("air")) {
-                Client.model.player.vel.x *= 0.8f;
-                Client.model.player.vel.z *= 0.8f;
-                if (Input.GetKey(KeyCode.Space)) {
-                    relacc.y += 0.5f;
-                }
-            }
             if (relacc.mag() == 0 && Client.model.player.vel.mag() < 0.01f)
                 Client.model.player.vel *= 0;
             Client.model.player.vel.x += relacc.x * (float)Math.Cos(Client.view.camera.ha * conv) + relacc.z * (float)Math.Sin(Client.view.camera.ha * conv);
             Client.model.player.vel.z += relacc.z * (float)Math.Cos(Client.view.camera.ha * conv) - relacc.x * (float)Math.Sin(Client.view.camera.ha * conv);
             Client.model.player.vel.y += relacc.y;
 
-            
-            if(block.type != BlockType.get("air") && Client.model.player.vel.y < 0) {
+            Vec3 nextpos = Client.model.player.pos + Client.model.player.vel;
+
+            if (collide(Client.model.player.pos + new Vec3(0, Client.model.player.vel.y, 0)))
                 Client.model.player.vel.y = 0;
-            }
-            Block blocknx = Client.model.map.getBlock((Client.model.player.pos + new Vec3(-0.05f, 1, 0)).Floor());
-            Block blockpx = Client.model.map.getBlock((Client.model.player.pos + new Vec3(0.05f, 1, 0)).Floor());
-            Block blocknz = Client.model.map.getBlock((Client.model.player.pos + new Vec3(0, 1, -0.05f)).Floor());
-            Block blockpz = Client.model.map.getBlock((Client.model.player.pos + new Vec3(0, 1, 0.05f)).Floor());
-            Block blocknx2 = Client.model.map.getBlock((Client.model.player.pos + new Vec3(-0.05f, 2, 0)).Floor());
-            Block blockpx2 = Client.model.map.getBlock((Client.model.player.pos + new Vec3(0.05f, 2, 0)).Floor());
-            Block blocknz2 = Client.model.map.getBlock((Client.model.player.pos + new Vec3(0, 2, -0.05f)).Floor());
-            Block blockpz2 = Client.model.map.getBlock((Client.model.player.pos + new Vec3(0, 2, 0.05f)).Floor());
-
-            if (Client.model.player.vel.x < 0 && (blocknx.type != BlockType.get("air") || blocknx2.type != BlockType.get("air"))) {
+            Client.model.player.pos.y += Client.model.player.vel.y;
+            if (collide(Client.model.player.pos + new Vec3(Client.model.player.vel.x, 0, 0)))
                 Client.model.player.vel.x = 0;
-            }
-
-            if (Client.model.player.vel.x > 0 && (blockpx.type != BlockType.get("air") || blockpx2.type != BlockType.get("air"))) {
-                Client.model.player.vel.x = 0;
-            }
-            if (Client.model.player.vel.z < 0 && (blocknz.type != BlockType.get("air") || blocknz2.type != BlockType.get("air"))) {
+            Client.model.player.pos.x += Client.model.player.vel.x;
+            if (collide(Client.model.player.pos + new Vec3(0, 0, Client.model.player.vel.z)))
                 Client.model.player.vel.z = 0;
-            }
-            if (Client.model.player.vel.z > 0 && (blockpz.type != BlockType.get("air") || blockpz2.type != BlockType.get("air"))) {
-                Client.model.player.vel.z = 0;
-            }
+            Client.model.player.pos.z += Client.model.player.vel.z;
 
-            Client.model.player.pos += Client.model.player.vel;
             IntVec3 chunkpos = (Client.model.player.pos / 16).Floor();
             if (chunkpos == Client.model.map.chunkpos)
                 return;
             IntVec3 delta = chunkpos - Client.model.map.chunkpos;
             Client.model.map.setChunkPos(chunkpos);
             Client.view.world.move(delta);
+        }
+
+        bool collide(Vec3 pos) {
+            bool result = false;
+
+            result = result || pointCollide(pos + new Vec3(0.25f, 0, 0.25f));
+            result = result || pointCollide(pos + new Vec3(0.25f, 0, -0.25f));
+            result = result || pointCollide(pos + new Vec3(-0.25f, 0, 0.25f));
+            result = result || pointCollide(pos + new Vec3(-0.25f, 0, -0.25f));
+
+            result = result || pointCollide(pos + new Vec3(0.25f, 0.5f, 0.25f));
+            result = result || pointCollide(pos + new Vec3(0.25f, 0.5f, -0.25f));
+            result = result || pointCollide(pos + new Vec3(-0.25f, 0.5f, 0.25f));
+            result = result || pointCollide(pos + new Vec3(-0.25f, 0.5f, -0.25f));
+
+            result = result || pointCollide(pos + new Vec3(0.25f, 1, 0.25f));
+            result = result || pointCollide(pos + new Vec3(0.25f, 1, -0.25f));
+            result = result || pointCollide(pos + new Vec3(-0.25f, 1, 0.25f));
+            result = result || pointCollide(pos + new Vec3(-0.25f, 1, -0.25f));
+
+            result = result || pointCollide(pos + new Vec3(0.25f, 1.5f, 0.25f));
+            result = result || pointCollide(pos + new Vec3(0.25f, 1.5f, -0.25f));
+            result = result || pointCollide(pos + new Vec3(-0.25f, 1.5f, 0.25f));
+            result = result || pointCollide(pos + new Vec3(-0.25f, 1.5f, -0.25f));
+
+            result = result || pointCollide(pos + new Vec3(0.25f, 1.75f, 0.25f));
+            result = result || pointCollide(pos + new Vec3(0.25f, 1.75f, -0.25f));
+            result = result || pointCollide(pos + new Vec3(-0.25f, 1.75f, 0.25f));
+            result = result || pointCollide(pos + new Vec3(-0.25f, 1.75f, -0.25f));
+
+            return result;
+        }
+
+        bool pointCollide(Vec3 pos) {
+            return Client.model.map.getBlock(pos.Floor()).type.name != "air";
         }
 
         Vec3 pointmine() {
