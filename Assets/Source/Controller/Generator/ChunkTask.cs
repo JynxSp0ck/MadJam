@@ -4,6 +4,8 @@ using System.IO;
 
 namespace Game.Controller {
     class ChunkTask {
+        public static int N = 0;
+        public bool started = false;
         public bool finished = false;
         public string type;
         public Game.Model.Chunk chunk;
@@ -14,6 +16,7 @@ namespace Game.Controller {
         }
 
         public void start() {
+            N++;
             if (type == "generate")
                 generate();
             if (type == "save")
@@ -21,6 +24,7 @@ namespace Game.Controller {
             if (type == "load")
                 load();
             finished = true;
+            N--;
         }
 
         public void save() {
@@ -46,6 +50,7 @@ namespace Game.Controller {
                 }
             }
             chunk.loaded = true;
+            chunk.saved = true;
         }
 
         public void generate() {
@@ -61,7 +66,7 @@ namespace Game.Controller {
 
         Game.Model.Block genBlock(Game.Utility.IntVec3 index) {
             Game.Utility.IntVec3 pos = index + chunk.pos * Game.Model.Settings.chunk_size;
-            return pos.y >= Client.random.Next(-3, 0) ? new Game.Model.Block("air") : new Game.Model.Block("dirt");
+            return pos.y >= Client.random.Next(-3, 0) ? new Game.Model.Block("air") : (Client.random.Next(10) == 0 ? new Game.Model.Block("coal") : new Game.Model.Block("dirt"));
         }
     }
 }

@@ -7,7 +7,8 @@ using Game.Utility;
 
 namespace Game.Controller {
     class ChunkGenerator {
-        List<ChunkTask> tasks = new List<ChunkTask>();
+        List<ChunkTask> loadqueue = new List<ChunkTask>();
+        List<ChunkTask> savequeue = new List<ChunkTask>();
 
         public Thread thread = null;
 
@@ -17,21 +18,14 @@ namespace Game.Controller {
 
         public void run() {
             generateChunks();
-            //saveChunks();
-            if (tasks.Count == 0)
-                return;
-            if (!tasks[0].finished)
-                return;
-            tasks.RemoveAt(0);
-            if (tasks.Count == 0)
-                return;
-            thread = new Thread(new ThreadStart(tasks[0].start));
-            try {
-                thread.Start();
-            }
-            catch (ThreadStateException e) {
-                UnityEngine.Debug.Log("Thread Error" + e.ToString());
-            }
+            saveChunks();
+            if (loadqueue.Count > 0)
+                if (loadqueue[0].finished)
+                    loadqueue.RemoveAt(0);
+            if (savequeue.Count > 0)
+                if (savequeue[0].finished)
+                    savequeue.RemoveAt(0);
+            startthread();
         }
 
         public void generateChunks() {
@@ -64,10 +58,49 @@ namespace Game.Controller {
 
         public void add(string type, Chunk chunk) {
             ChunkTask task = new ChunkTask(type, chunk);
-            tasks.Add(task);
-            if (tasks[0] != task)
+            if (type == "save")
+                savequeue.Add(task);
+            else
+                loadqueue.Add(task);
+            startthread();
+        }
+
+        void startthread() {
+            bool running = false;
+            if (loadqueue.Count > 0)
+                if (loadqueue[0].started)
+                    running = true;
+            if (savequeue.Count > 0)
+                if (savequeue[0].started)
+                    running = true;
+            if (running)
                 return;
+            if (loadqueue.Count > 0)
+                startload();
+            else if (savequeue.Count > 0)
+                startsave();
+        }
+
+        void startload() {
+            if (loadqueue.Count == 0)
+                return;
+            ChunkTask task = loadqueue[0];
             thread = new Thread(new ThreadStart(task.start));
+            task.started = true;
+            try {
+                thread.Start();
+            }
+            catch (ThreadStateException e) {
+                UnityEngine.Debug.Log("Thread Error" + e.ToString());
+            }
+        }
+
+        void startsave() {
+            if (savequeue.Count == 0)
+                return;
+            ChunkTask task = savequeue[0];
+            thread = new Thread(new ThreadStart(task.start));
+            task.started = true;
             try {
                 thread.Start();
             }

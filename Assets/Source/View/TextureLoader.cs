@@ -42,6 +42,7 @@ namespace Game.View {
             map.wrapMode = TextureWrapMode.Clamp;
             map.filterMode = FilterMode.Point;
             map.Apply();
+            File.WriteAllBytes("Assets/Resources/Textures/spritesheet.png", map.EncodeToPNG());
             return map;
         }
     }
