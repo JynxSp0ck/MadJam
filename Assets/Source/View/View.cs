@@ -9,6 +9,7 @@ namespace Game.View {
         public GameObject obj;
 
         public Camera camera;
+        public UI ui;
         public World world;
         public Materials materials;
 
@@ -19,6 +20,7 @@ namespace Game.View {
         public void init() {
             materials = new Materials();
             camera = new Camera();
+            ui = new UI();
             world = new World();
             world.setChunks();
         }
@@ -26,6 +28,7 @@ namespace Game.View {
         public void update() {
             camera.update();
             world.update();
+            ui.update();
         }
     }
 }

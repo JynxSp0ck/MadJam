@@ -4,7 +4,7 @@ using Game.Utility;
 
 namespace Game.Model {
     class Inventory {
-        Stack[] slots;
+        public Stack[] slots;
 
         public Inventory() {
             slots = new Stack[10];
@@ -31,6 +31,7 @@ namespace Game.Model {
             }
             for (int i = 0; i < slots.Length; i++) {
                 if (slots[i].type == null) {
+                    slots[i].type = items.type;
                     int space = slots[i].type.stacklimit;
                     if (space > 0) {
                         if (space > items.count) {
@@ -38,7 +39,6 @@ namespace Game.Model {
                         }
                         slots[i].count += space;
                         items.count -= space;
-                        slots[i].type = items.type;
                     }
                     if (items.count == 0) {
                         items.empty();
